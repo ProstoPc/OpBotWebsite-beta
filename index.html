@@ -66,6 +66,7 @@
         .nav-links {
             display: flex;
             gap: 30px;
+            align-items: center;
         }
 
         .nav-links a {
@@ -79,6 +80,12 @@
             color: var(--accent-blue);
         }
 
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
         .cta-button {
             background-color: var(--accent-blue);
             color: var(--primary-dark);
@@ -87,10 +94,32 @@
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s;
+            border: none;
+            cursor: pointer;
         }
 
         .cta-button:hover {
             background-color: var(--light-blue);
+            transform: translateY(-2px);
+        }
+
+        .panel-button {
+            background-color: transparent;
+            color: var(--accent-blue);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid var(--accent-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-button:hover {
+            background-color: rgba(0, 168, 255, 0.1);
             transform: translateY(-2px);
         }
 
@@ -364,6 +393,18 @@
 
             .nav-links {
                 gap: 15px;
+                flex-direction: column;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .panel-button, .cta-button {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
             }
 
             .hero h1 {
@@ -396,8 +437,14 @@
                     <a href="#commands">Команды</a>
                     <a href="#stats">Статистика</a>
                     <a href="#support">Поддержка</a>
+                    <div class="nav-buttons">
+                        <a href="dashboard.html" class="panel-button">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Панель
+                        </a>
+                        <a href="#" class="cta-button">Добавить бота</a>
+                    </div>
                 </div>
-                <a href="#" class="cta-button">Добавить бота</a>
             </nav>
         </div>
     </header>
@@ -656,6 +703,12 @@
             } else {
                 header.style.backgroundColor = 'var(--secondary-dark)';
             }
+        });
+
+        // Обработчик для кнопки панели
+        document.querySelector('.panel-button').addEventListener('click', function(e) {
+            // Можно добавить дополнительную логику здесь
+            console.log('Переход в панель управления');
         });
     </script>
 </body>
