@@ -111,11 +111,6 @@
             color: white;
         }
 
-        .btn-warning {
-            background-color: var(--warning);
-            color: white;
-        }
-
         .btn-discord {
             background-color: #5865F2;
             color: white;
@@ -379,21 +374,21 @@
             background-color: var(--error);
         }
 
-        .config-section {
-            background: var(--secondary-dark);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+        .admin-info {
+            background: linear-gradient(135deg, var(--accent-blue), var(--light-blue));
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
         }
 
-        .config-input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background: var(--primary-dark);
-            border: 1px solid var(--accent-blue);
-            border-radius: 5px;
+        .permission-badge {
+            background: var(--success);
             color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -422,28 +417,24 @@
     <section class="auth-section" id="auth-section">
         <div class="container">
             <div class="auth-container">
-                <h2>Авторизация через Discord</h2>
-                <p>Для управления ботом необходимо авторизоваться через Discord</p>
-                
-                <div class="config-section">
-                    <h4><i class="fas fa-cog"></i> Настройка Client ID</h4>
-                    <input type="text" id="client-id-input" class="config-input" placeholder="Введите ваш Discord Client ID">
-                    <button class="btn btn-primary" onclick="saveClientId()">
-                        <i class="fas fa-save"></i> Сохранить Client ID
-                    </button>
+                <div class="admin-info">
+                    <h3><i class="fas fa-crown"></i> Управление ботом</h3>
+                    <p>Панель управления для бота на ваших серверах</p>
                 </div>
 
-                <a href="#" class="btn btn-discord" id="discord-login" style="display: none;">
+                <h2>Авторизация через Discord</h2>
+                <p>Для управления настройками бота необходимо авторизоваться</p>
+                
+                <a href="#" class="btn btn-discord" id="discord-login">
                     <i class="fab fa-discord"></i> Войти через Discord
                 </a>
 
                 <div style="margin-top: 30px; padding: 20px; background: var(--primary-dark); border-radius: 8px;">
-                    <h4><i class="fas fa-info-circle"></i> Инструкция</h4>
+                    <h4><i class="fas fa-info-circle"></i> Информация</h4>
                     <p style="margin: 10px 0; color: var(--text-gray); font-size: 14px;">
-                        1. Получите Client ID в Discord Developer Portal<br>
-                        2. Введите его в поле выше и сохраните<br>
-                        3. Нажмите "Войти через Discord"<br>
-                        4. Все данные сохраняются локально в JSON
+                        • Вы сможете управлять ботом на серверах<br>
+                        • Требуются права администратора на серверах<br>
+                        • Все настройки сохраняются автоматически
                     </p>
                 </div>
             </div>
@@ -453,13 +444,13 @@
     <!-- Dashboard Section -->
     <section class="dashboard-section" id="dashboard-section">
         <div class="container">
-            <h2>Панель управления</h2>
+            <h2>Панель управления ботом</h2>
             
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-server"></i>
                     <div class="stat-number" id="servers-count">0</div>
-                    <div>Серверов</div>
+                    <div>Доступных серверов</div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
@@ -472,25 +463,13 @@
                     <div>Активных функций</div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-database"></i>
-                    <div class="stat-number" id="data-size">0 KB</div>
-                    <div>Размер данных</div>
+                    <i class="fas fa-robot"></i>
+                    <div class="stat-number" id="bot-status">Online</div>
+                    <div>Статус бота</div>
                 </div>
             </div>
 
-            <div class="server-actions" style="margin: 20px 0;">
-                <button class="btn btn-success" onclick="exportData()">
-                    <i class="fas fa-download"></i> Экспорт данных
-                </button>
-                <button class="btn btn-warning" onclick="importData()">
-                    <i class="fas fa-upload"></i> Импорт данных
-                </button>
-                <button class="btn btn-secondary" onclick="clearData()">
-                    <i class="fas fa-trash"></i> Очистить данные
-                </button>
-            </div>
-
-            <h3>Ваши серверы</h3>
+            <h3>Серверы с ботом</h3>
             <div class="servers-grid" id="servers-grid">
                 <div class="loading" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
                     <i class="fas fa-spinner fa-spin"></i> Загрузка серверов...
@@ -514,6 +493,7 @@
                 <div class="tab" data-tab="farewell">Прощание</div>
                 <div class="tab" data-tab="autorole">Автороль</div>
                 <div class="tab" data-tab="moderation">Модерация</div>
+                <div class="tab" data-tab="logs">Логи</div>
             </div>
 
             <!-- Welcome Settings -->
@@ -538,40 +518,25 @@
                     </div>
                     
                     <div class="setting-item">
-                        <label class="setting-label">JSON редактор сообщения:</label>
-                        <textarea class="json-editor" id="welcome-json" placeholder="Введите JSON структуру сообщения...">
-{
-  "content": "Добро пожаловать, {user}!",
-  "embeds": [
-    {
-      "title": "🎉 Добро пожаловать!",
-      "description": "Рады видеть тебя на нашем сервере, {user}!",
-      "color": 3447003,
-      "thumbnail": {
-        "url": "{user_avatar}"
-      },
-      "fields": [
-        {
-          "name": "👥 Участник",
-          "value": "{user} (№{member_count})",
-          "inline": true
-        }
-      ],
-      "timestamp": "{join_time}"
-    }
-  ]
-}</textarea>
-                    </div>
-                    
-                    <div class="preview-area" id="welcome-preview">
-                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
-                        <div id="welcome-preview-content" style="margin-top: 10px; color: var(--text-gray);">
-                            Предпросмотр будет отображен здесь после ввода валидного JSON
-                        </div>
+                        <label class="setting-label">Текст сообщения:</label>
+                        <textarea class="json-editor" id="welcome-message" placeholder="Введите текст приветственного сообщения...">
+Добро пожаловать, {user}!
+
+Мы рады видеть тебя на нашем сервере! 🎉
+
+📋 Обязательно ознакомься с правилами
+💬 Общайся в соответствующих каналах
+🎮 Участвуй в активностях
+
+Ты наш {member_count}-й участник!
+                        </textarea>
                     </div>
                     
                     <button class="btn btn-success" onclick="saveSettings('welcome')">
                         <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                    <button class="btn btn-primary" onclick="testFeature('welcome')">
+                        <i class="fas fa-play"></i> Тестировать
                     </button>
                 </div>
             </div>
@@ -598,29 +563,14 @@
                     </div>
                     
                     <div class="setting-item">
-                        <label class="setting-label">JSON редактор сообщения:</label>
-                        <textarea class="json-editor" id="farewell-json" placeholder="Введите JSON структуру сообщения...">
-{
-  "content": "Пока, {user}!",
-  "embeds": [
-    {
-      "title": "👋 Прощание",
-      "description": "{user} покинул нас :(",
-      "color": 15158332,
-      "thumbnail": {
-        "url": "{user_avatar}"
-      },
-      "timestamp": "{leave_time}"
-    }
-  ]
-}</textarea>
-                    </div>
-                    
-                    <div class="preview-area" id="farewell-preview">
-                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
-                        <div id="farewell-preview-content" style="margin-top: 10px; color: var(--text-gray);">
-                            Предпросмотр будет отображен здесь после ввода валидного JSON
-                        </div>
+                        <label class="setting-label">Текст сообщения:</label>
+                        <textarea class="json-editor" id="farewell-message" placeholder="Введите текст сообщения прощания...">
+Пока, {user}! 😔
+
+Надеемся увидеть тебя снова на нашем сервере!
+
+Теперь нас осталось {member_count} участников.
+                        </textarea>
                     </div>
                     
                     <button class="btn btn-success" onclick="saveSettings('farewell')">
@@ -649,6 +599,11 @@
                             <option value="">Выберите роль</option>
                         </select>
                     </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Задержка выдачи (секунды):</label>
+                        <input type="number" id="autorole-delay" class="channel-select" value="0" min="0" max="300">
+                    </div>
                     
                     <button class="btn btn-success" onclick="saveSettings('autorole')">
                         <i class="fas fa-save"></i> Сохранить настройки
@@ -671,7 +626,14 @@
                     </div>
 
                     <div class="setting-item">
-                        <label class="setting-label">Максимальное количество предупреждений:</label>
+                        <label class="setting-label">Канал для логов:</label>
+                        <select class="channel-select" id="modlog-channel">
+                            <option value="">Выберите канал</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Максимум предупреждений:</label>
                         <input type="number" id="max-warnings" class="channel-select" value="3" min="1" max="10">
                     </div>
 
@@ -685,7 +647,13 @@
                     <div class="setting-item">
                         <label style="display: flex; align-items: center; gap: 10px;">
                             <input type="checkbox" id="filter-invites">
-                            Блокировать приглашения
+                            Блокировать приглашения Discord
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="filter-words">
+                            Фильтр плохих слов
                         </label>
                     </div>
                     
@@ -694,140 +662,89 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Logs Settings -->
+            <div class="tab-content" id="logs-tab">
+                <div class="setting-group">
+                    <h3><i class="fas fa-clipboard-list"></i> Логи и статистика</h3>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">Включить логирование:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="logs-enabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="logs-status-text" style="margin-left: 10px;">Выключено</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Канал для логов:</label>
+                        <select class="channel-select" id="logs-channel">
+                            <option value="">Выберите канал</option>
+                        </select>
+                    </div>
+
+                    <h4>Типы событий для логирования:</h4>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="log-joins" checked>
+                            Вход/выход участников
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="log-messages" checked>
+                            Удаление сообщений
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="log-moderation">
+                            Действия модерации
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="log-voice">
+                            Активность в голосовых
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveSettings('logs')">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 
-    <input type="file" id="import-file" style="display: none;" accept=".json">
-
     <script>
-        // Конфигурация
+        // КОНФИГУРАЦИЯ - ЗАМЕНИТЕ НА ВАШ Client ID
         const CONFIG = {
-            clientId: localStorage.getItem('discord_client_id') || '',
+            clientId: '1250043764899319940', // ЗАМЕНИТЕ НА ВАШ DISCORD CLIENT ID
             redirectUri: window.location.origin + window.location.pathname,
-            scope: 'identify guilds'
+            scope: 'identify guilds',
+            botGuilds: [] // Серверы где бот имеет права администратора
         };
 
-        // Хранилище данных в JSON формате
-        const DataStorage = {
-            // Получить все данные
-            getAllData() {
-                const data = {
-                    clientId: CONFIG.clientId,
-                    user: JSON.parse(localStorage.getItem('discord_user') || 'null'),
-                    guilds: JSON.parse(localStorage.getItem('discord_guilds') || '[]'),
-                    settings: JSON.parse(localStorage.getItem('bot_settings') || '{}'),
-                    lastUpdate: new Date().toISOString()
-                };
-                return data;
-            },
-
-            // Сохранить пользователя
-            saveUser(user) {
-                localStorage.setItem('discord_user', JSON.stringify(user));
-                this.updateDataSize();
-            },
-
-            // Сохранить серверы
-            saveGuilds(guilds) {
-                localStorage.setItem('discord_guilds', JSON.stringify(guilds));
-                this.updateDataSize();
-            },
-
-            // Сохранить настройки сервера
-            saveServerSettings(guildId, settings) {
-                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
-                allSettings[guildId] = settings;
-                localStorage.setItem('bot_settings', JSON.stringify(allSettings));
-                this.updateDataSize();
-            },
-
-            // Получить настройки сервера
-            getServerSettings(guildId) {
-                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
-                return allSettings[guildId] || {};
-            },
-
-            // Обновить размер данных
-            updateDataSize() {
-                const data = JSON.stringify(this.getAllData());
-                const size = new Blob([data]).size;
-                document.getElementById('data-size').textContent = Math.round(size / 1024) + ' KB';
-            },
-
-            // Экспорт данных
-            exportData() {
-                const data = this.getAllData();
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `opbot-backup-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-            },
-
-            // Импорт данных
-            importData(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        
-                        if (data.clientId) {
-                            localStorage.setItem('discord_client_id', data.clientId);
-                            CONFIG.clientId = data.clientId;
-                        }
-                        if (data.user) localStorage.setItem('discord_user', JSON.stringify(data.user));
-                        if (data.guilds) localStorage.setItem('discord_guilds', JSON.stringify(data.guilds));
-                        if (data.settings) localStorage.setItem('bot_settings', JSON.stringify(data.settings));
-                        
-                        this.updateDataSize();
-                        showNotification('Данные успешно импортированы!', 'success');
-                        
-                        // Перезагружаем интерфейс
-                        if (data.user) {
-                            loadUserData();
-                        }
-                    } catch (error) {
-                        showNotification('Ошибка при импорте данных', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            },
-
-            // Очистить все данные
-            clearData() {
-                if (confirm('Вы уверены, что хотите очистить все данные? Это действие нельзя отменить.')) {
-                    localStorage.removeItem('discord_user');
-                    localStorage.removeItem('discord_guilds');
-                    localStorage.removeItem('bot_settings');
-                    this.updateDataSize();
-                    showNotification('Все данные очищены', 'success');
-                    showAuth();
-                }
+        class BotDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.userGuilds = [];
+                this.availableGuilds = []; // Серверы где пользователь администратор И есть бот
+                this.currentGuild = null;
+                this.init();
             }
-        };
 
-        // Основное приложение
-        const App = {
-            currentUser: null,
-            userGuilds: [],
-            currentGuild: null,
-
-            init() {
+            async init() {
                 this.setupEventListeners();
-                this.checkAuth();
-                DataStorage.updateDataSize();
-            },
+                await this.checkAuth();
+                this.updateDiscordLoginUrl();
+            }
 
             setupEventListeners() {
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
                 document.getElementById('back-btn').addEventListener('click', () => this.showDashboard());
-                document.getElementById('import-file').addEventListener('change', (e) => {
-                    if (e.target.files[0]) {
-                        DataStorage.importData(e.target.files[0]);
-                    }
-                });
 
                 // Вкладки
                 document.querySelectorAll('.tab').forEach(tab => {
@@ -845,44 +762,53 @@
                         statusText.style.color = e.target.checked ? 'var(--success)' : 'var(--error)';
                     });
                 });
+            }
 
-                // JSON редакторы
-                document.getElementById('welcome-json').addEventListener('input', () => this.updatePreview('welcome'));
-                document.getElementById('farewell-json').addEventListener('input', () => this.updatePreview('farewell'));
-            },
-
-            checkAuth() {
-                const user = JSON.parse(localStorage.getItem('discord_user') || 'null');
-                const guilds = JSON.parse(localStorage.getItem('discord_guilds') || '[]');
+            updateDiscordLoginUrl() {
+                const params = new URLSearchParams({
+                    client_id: CONFIG.clientId,
+                    redirect_uri: CONFIG.redirectUri,
+                    response_type: 'token',
+                    scope: CONFIG.scope
+                });
                 
-                if (user && guilds.length > 0) {
-                    this.currentUser = user;
-                    this.userGuilds = guilds;
+                document.getElementById('discord-login').href = 
+                    `https://discord.com/oauth2/authorize?${params}`;
+            }
+
+            async checkAuth() {
+                const userData = localStorage.getItem('discord_user');
+                const guildsData = localStorage.getItem('discord_guilds');
+                
+                if (userData && guildsData) {
+                    this.currentUser = JSON.parse(userData);
+                    this.userGuilds = JSON.parse(guildsData);
+                    await this.filterAvailableGuilds();
                     this.showDashboard();
                     this.updateUserInfo();
-                    this.loadGuilds();
                 } else {
                     this.showAuth();
                 }
+            }
 
-                // Обновляем ссылку Discord OAuth
-                this.updateDiscordLoginUrl();
-            },
+            async filterAvailableGuilds() {
+                // Фильтруем серверы где пользователь администратор
+                const adminGuilds = this.userGuilds.filter(guild => 
+                    (guild.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
+                );
 
-            updateDiscordLoginUrl() {
-                if (CONFIG.clientId) {
-                    const params = new URLSearchParams({
-                        client_id: CONFIG.clientId,
-                        redirect_uri: CONFIG.redirectUri,
-                        response_type: 'token',
-                        scope: CONFIG.scope
-                    });
-                    
-                    document.getElementById('discord-login').href = 
-                        `https://discord.com/oauth2/authorize?${params}`;
-                    document.getElementById('discord-login').style.display = 'inline-flex';
-                }
-            },
+                // В реальном приложении здесь бы проверялось наличие бота на сервере
+                // Для демо используем mock данные
+                this.availableGuilds = adminGuilds.map(guild => ({
+                    ...guild,
+                    bot_online: true,
+                    bot_permissions: 0x8,
+                    features: ['welcome', 'moderation', 'autorole']
+                }));
+
+                // Сохраняем ID серверов с ботом для конфигурации
+                CONFIG.botGuilds = this.availableGuilds.map(g => g.id);
+            }
 
             async handleOAuthCallback() {
                 const hash = window.location.hash.substring(1);
@@ -896,49 +822,58 @@
                         window.history.replaceState({}, document.title, window.location.pathname);
                     } catch (error) {
                         console.error('OAuth callback failed:', error);
-                        showNotification('Ошибка авторизации', 'error');
+                        this.showNotification('Ошибка авторизации', 'error');
                     }
                 }
-            },
+            }
 
             async loadUserData(accessToken) {
-                // Загружаем данные пользователя через Discord API
-                const userResponse = await fetch('https://discord.com/api/users/@me', {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
-                const user = await userResponse.json();
-                
-                const guildsResponse = await fetch('https://discord.com/api/users/@me/guilds', {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
-                const guilds = await guildsResponse.json();
-                
-                // Фильтруем серверы где пользователь администратор
-                const adminGuilds = guilds.filter(guild => (guild.permissions & 0x8) === 0x8);
-                
-                // Сохраняем данные
-                DataStorage.saveUser(user);
-                DataStorage.saveGuilds(adminGuilds);
-                
-                this.currentUser = user;
-                this.userGuilds = adminGuilds;
-                
-                this.showDashboard();
-                this.updateUserInfo();
-                this.loadGuilds();
-                
-                showNotification('Успешная авторизация!', 'success');
-            },
+                try {
+                    // Загружаем данные пользователя
+                    const userResponse = await fetch('https://discord.com/api/users/@me', {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+                    const user = await userResponse.json();
+                    
+                    // Загружаем серверы пользователя
+                    const guildsResponse = await fetch('https://discord.com/api/users/@me/guilds', {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+                    const guilds = await guildsResponse.json();
+                    
+                    // Сохраняем данные
+                    localStorage.setItem('discord_user', JSON.stringify(user));
+                    localStorage.setItem('discord_guilds', JSON.stringify(guilds));
+                    
+                    this.currentUser = user;
+                    this.userGuilds = guilds;
+                    
+                    await this.filterAvailableGuilds();
+                    this.showDashboard();
+                    this.updateUserInfo();
+                    
+                    this.showNotification('Успешная авторизация!', 'success');
+                    
+                } catch (error) {
+                    console.error('Failed to load user data:', error);
+                    this.showNotification('Ошибка загрузки данных', 'error');
+                }
+            }
 
             loadGuilds() {
                 const grid = document.getElementById('servers-grid');
                 
-                if (this.userGuilds.length === 0) {
+                if (this.availableGuilds.length === 0) {
                     grid.innerHTML = `
                         <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">
-                            <i class="fas fa-server" style="font-size: 3rem; color: var(--text-gray); margin-bottom: 20px;"></i>
+                            <i class="fas fa-robot" style="font-size: 3rem; color: var(--text-gray); margin-bottom: 20px;"></i>
                             <h3>Нет доступных серверов</h3>
-                            <p>У вас нет серверов с правами администратора</p>
+                            <p>Бот не добавлен на серверы где вы администратор, или у вас нет прав администратора</p>
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="window.open('https://discord.com/oauth2/authorize?client_id=${CONFIG.clientId}&scope=bot&permissions=8', '_blank')">
+                                    <i class="fas fa-plus"></i> Добавить бота на сервер
+                                </button>
+                            </div>
                         </div>
                     `;
                     return;
@@ -946,7 +881,7 @@
 
                 grid.innerHTML = '';
 
-                this.userGuilds.forEach(guild => {
+                this.availableGuilds.forEach(guild => {
                     const card = document.createElement('div');
                     card.className = 'server-card';
                     
@@ -961,8 +896,12 @@
                         }
                         <h3>${guild.name}</h3>
                         <p>👥 Участников: ${guild.approximate_member_count?.toLocaleString() || 'N/A'}</p>
+                        <p>
+                            <span class="permission-badge">Бот онлайн</span>
+                            <span class="permission-badge">Администратор</span>
+                        </p>
                         <div class="server-actions">
-                            <button class="btn btn-primary" onclick="app.manageServer('${guild.id}')">
+                            <button class="btn btn-primary" onclick="dashboard.manageServer('${guild.id}')">
                                 <i class="fas fa-cog"></i> Управлять
                             </button>
                         </div>
@@ -972,39 +911,52 @@
                 });
 
                 this.updateStats();
-            },
+            }
 
             manageServer(guildId) {
-                const guild = this.userGuilds.find(g => g.id === guildId);
+                const guild = this.availableGuilds.find(g => g.id === guildId);
                 if (guild) {
                     this.currentGuild = guild;
                     document.getElementById('server-name').textContent = `Управление: ${guild.name}`;
                     this.showServerManagement();
                     this.loadServerData(guild);
                 }
-            },
+            }
 
             loadServerData(guild) {
-                // В реальном приложении здесь бы загружались каналы и роли через API
-                // Для демо создаем mock данные
+                // Загружаем текущие настройки из localStorage
+                const settings = this.getServerSettings(guild.id);
+                
+                // Заполняем формы
+                this.fillSettingsForm(settings);
+                
+                // Создаем mock данные каналов и ролей
+                this.createMockServerData(guild);
+            }
+
+            createMockServerData(guild) {
+                // Mock каналы
                 const mockChannels = [
                     { id: '1', name: 'общий', type: 0 },
                     { id: '2', name: 'приветствия', type: 0 },
-                    { id: '3', name: 'логи', type: 0 }
+                    { id: '3', name: 'логи', type: 0 },
+                    { id: '4', name: 'команды', type: 0 }
                 ];
                 
+                // Mock роли
                 const mockRoles = [
                     { id: '1', name: 'Участник' },
                     { id: '2', name: 'Модератор' },
-                    { id: '3', name: 'Администратор' }
+                    { id: '3', name: 'Администратор' },
+                    { id: '4', name: 'VIP' }
                 ];
 
                 this.fillChannelSelect('welcome-channel', mockChannels);
                 this.fillChannelSelect('farewell-channel', mockChannels);
+                this.fillChannelSelect('modlog-channel', mockChannels);
+                this.fillChannelSelect('logs-channel', mockChannels);
                 this.fillRoleSelect('autorole-role', mockRoles);
-                
-                this.loadCurrentSettings(guild.id);
-            },
+            }
 
             fillChannelSelect(selectId, channels) {
                 const select = document.getElementById(selectId);
@@ -1016,7 +968,7 @@
                     option.textContent = `#${channel.name}`;
                     select.appendChild(option);
                 });
-            },
+            }
 
             fillRoleSelect(selectId, roles) {
                 const select = document.getElementById(selectId);
@@ -1028,85 +980,107 @@
                     option.textContent = role.name;
                     select.appendChild(option);
                 });
-            },
+            }
 
-            loadCurrentSettings(guildId) {
-                const settings = DataStorage.getServerSettings(guildId);
-                
+            fillSettingsForm(settings) {
+                // Приветствие
                 if (settings.welcome) {
                     document.getElementById('welcome-enabled').checked = settings.welcome.enabled || false;
                     document.getElementById('welcome-channel').value = settings.welcome.channel_id || '';
-                    if (settings.welcome.message) {
-                        document.getElementById('welcome-json').value = JSON.stringify(settings.welcome.message, null, 2);
-                    }
+                    document.getElementById('welcome-message').value = settings.welcome.message || '';
                 }
 
+                // Прощание
                 if (settings.farewell) {
                     document.getElementById('farewell-enabled').checked = settings.farewell.enabled || false;
                     document.getElementById('farewell-channel').value = settings.farewell.channel_id || '';
-                    if (settings.farewell.message) {
-                        document.getElementById('farewell-json').value = JSON.stringify(settings.farewell.message, null, 2);
-                    }
+                    document.getElementById('farewell-message').value = settings.farewell.message || '';
                 }
 
+                // Автороль
                 if (settings.autorole) {
                     document.getElementById('autorole-enabled').checked = settings.autorole.enabled || false;
                     document.getElementById('autorole-role').value = settings.autorole.role_id || '';
+                    document.getElementById('autorole-delay').value = settings.autorole.delay || 0;
                 }
 
+                // Модерация
                 if (settings.moderation) {
                     document.getElementById('automod-enabled').checked = settings.moderation.enabled || false;
+                    document.getElementById('modlog-channel').value = settings.moderation.log_channel || '';
                     document.getElementById('max-warnings').value = settings.moderation.max_warnings || 3;
                     document.getElementById('filter-links').checked = settings.moderation.filter_links || false;
                     document.getElementById('filter-invites').checked = settings.moderation.filter_invites || false;
+                    document.getElementById('filter-words').checked = settings.moderation.filter_words || false;
                 }
 
+                // Логи
+                if (settings.logs) {
+                    document.getElementById('logs-enabled').checked = settings.logs.enabled || false;
+                    document.getElementById('logs-channel').value = settings.logs.channel_id || '';
+                    document.getElementById('log-joins').checked = settings.logs.log_joins || false;
+                    document.getElementById('log-messages').checked = settings.logs.log_messages || false;
+                    document.getElementById('log-moderation').checked = settings.logs.log_moderation || false;
+                    document.getElementById('log-voice').checked = settings.logs.log_voice || false;
+                }
+
+                // Обновляем статусы toggle switches
                 document.querySelectorAll('.toggle-switch input').forEach(toggle => {
                     toggle.dispatchEvent(new Event('change'));
                 });
+            }
 
-                this.updatePreview('welcome');
-                this.updatePreview('farewell');
-            },
+            getServerSettings(guildId) {
+                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
+                return allSettings[guildId] || {};
+            }
+
+            saveServerSettings(guildId, settings) {
+                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
+                allSettings[guildId] = { ...allSettings[guildId], ...settings };
+                localStorage.setItem('bot_settings', JSON.stringify(allSettings));
+            }
 
             updateStats() {
-                document.getElementById('servers-count').textContent = this.userGuilds.length;
+                document.getElementById('servers-count').textContent = this.availableGuilds.length;
                 
-                const totalMembers = this.userGuilds.reduce((sum, guild) => 
+                const totalMembers = this.availableGuilds.reduce((sum, guild) => 
                     sum + (guild.approximate_member_count || 0), 0
                 );
                 document.getElementById('total-members').textContent = totalMembers.toLocaleString();
                 
                 // Считаем активные функции
                 let activeFeatures = 0;
-                this.userGuilds.forEach(guild => {
-                    const settings = DataStorage.getServerSettings(guild.id);
+                this.availableGuilds.forEach(guild => {
+                    const settings = this.getServerSettings(guild.id);
                     if (settings.welcome?.enabled) activeFeatures++;
                     if (settings.farewell?.enabled) activeFeatures++;
                     if (settings.autorole?.enabled) activeFeatures++;
                     if (settings.moderation?.enabled) activeFeatures++;
+                    if (settings.logs?.enabled) activeFeatures++;
                 });
                 document.getElementById('active-features').textContent = activeFeatures;
-            },
+            }
 
             showAuth() {
                 document.getElementById('auth-section').style.display = 'block';
                 document.getElementById('dashboard-section').style.display = 'none';
                 document.getElementById('server-management').style.display = 'none';
                 document.getElementById('user-info').style.display = 'none';
-            },
+            }
 
             showDashboard() {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'block';
                 document.getElementById('server-management').style.display = 'none';
                 document.getElementById('user-info').style.display = 'flex';
-            },
+                this.loadGuilds();
+            }
 
             showServerManagement() {
                 document.getElementById('dashboard-section').style.display = 'none';
                 document.getElementById('server-management').style.display = 'block';
-            },
+            }
 
             updateUserInfo() {
                 if (this.currentUser) {
@@ -1119,16 +1093,17 @@
                     
                     document.getElementById('user-avatar').src = avatarUrl;
                 }
-            },
+            }
 
             logout() {
                 localStorage.removeItem('discord_user');
                 localStorage.removeItem('discord_guilds');
                 this.currentUser = null;
                 this.userGuilds = [];
+                this.availableGuilds = [];
                 this.showAuth();
-                showNotification('Вы вышли из системы', 'success');
-            },
+                this.showNotification('Вы вышли из системы', 'success');
+            }
 
             switchTab(tabName) {
                 document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -1136,48 +1111,22 @@
                 
                 document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
-            },
-
-            updatePreview(type) {
-                const jsonTextarea = document.getElementById(`${type}-json`);
-                const previewContent = document.getElementById(`${type}-preview-content`);
-                
-                try {
-                    const jsonData = JSON.parse(jsonTextarea.value);
-                    previewContent.innerHTML = `
-                        <div style="color: var(--success); margin-bottom: 10px;">
-                            <i class="fas fa-check-circle"></i> JSON валиден
-                        </div>
-                        <div style="background: var(--secondary-dark); padding: 15px; border-radius: 5px;">
-                            <strong>Контент:</strong> ${jsonData.content || 'Не указан'}<br>
-                            <strong>Эмбедов:</strong> ${jsonData.embeds ? jsonData.embeds.length : 0}
-                        </div>
-                    `;
-                } catch (error) {
-                    previewContent.innerHTML = `
-                        <div style="color: var(--error);">
-                            <i class="fas fa-exclamation-circle"></i> Ошибка в JSON: ${error.message}
-                        </div>
-                    `;
-                }
             }
-        };
 
-        // Глобальные функции
-        function saveClientId() {
-            const clientId = document.getElementById('client-id-input').value.trim();
-            if (clientId) {
-                localStorage.setItem('discord_client_id', clientId);
-                CONFIG.clientId = clientId;
-                App.updateDiscordLoginUrl();
-                showNotification('Client ID сохранен!', 'success');
-            } else {
-                showNotification('Введите Client ID', 'error');
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
             }
         }
 
+        // Глобальные функции для кнопок
         function saveSettings(type) {
-            if (!App.currentGuild) return;
+            if (!dashboard.currentGuild) return;
 
             const settings = {};
 
@@ -1187,78 +1136,66 @@
                         settings.welcome = {
                             enabled: document.getElementById('welcome-enabled').checked,
                             channel_id: document.getElementById('welcome-channel').value,
-                            message: JSON.parse(document.getElementById('welcome-json').value)
+                            message: document.getElementById('welcome-message').value
                         };
                         break;
                     case 'farewell':
                         settings.farewell = {
                             enabled: document.getElementById('farewell-enabled').checked,
                             channel_id: document.getElementById('farewell-channel').value,
-                            message: JSON.parse(document.getElementById('farewell-json').value)
+                            message: document.getElementById('farewell-message').value
                         };
                         break;
                     case 'autorole':
                         settings.autorole = {
                             enabled: document.getElementById('autorole-enabled').checked,
-                            role_id: document.getElementById('autorole-role').value
+                            role_id: document.getElementById('autorole-role').value,
+                            delay: parseInt(document.getElementById('autorole-delay').value) || 0
                         };
                         break;
                     case 'moderation':
                         settings.moderation = {
                             enabled: document.getElementById('automod-enabled').checked,
+                            log_channel: document.getElementById('modlog-channel').value,
                             max_warnings: parseInt(document.getElementById('max-warnings').value) || 3,
                             filter_links: document.getElementById('filter-links').checked,
-                            filter_invites: document.getElementById('filter-invites').checked
+                            filter_invites: document.getElementById('filter-invites').checked,
+                            filter_words: document.getElementById('filter-words').checked
+                        };
+                        break;
+                    case 'logs':
+                        settings.logs = {
+                            enabled: document.getElementById('logs-enabled').checked,
+                            channel_id: document.getElementById('logs-channel').value,
+                            log_joins: document.getElementById('log-joins').checked,
+                            log_messages: document.getElementById('log-messages').checked,
+                            log_moderation: document.getElementById('log-moderation').checked,
+                            log_voice: document.getElementById('log-voice').checked
                         };
                         break;
                 }
 
-                DataStorage.saveServerSettings(App.currentGuild.id, settings);
-                showNotification('Настройки сохранены успешно!', 'success');
-                App.updateStats();
+                dashboard.saveServerSettings(dashboard.currentGuild.id, settings);
+                dashboard.showNotification('Настройки сохранены успешно!', 'success');
+                dashboard.updateStats();
                 
             } catch (error) {
                 console.error('Save failed:', error);
-                showNotification('Ошибка при сохранении настроек', 'error');
+                dashboard.showNotification('Ошибка при сохранении настроек', 'error');
             }
         }
 
-        function exportData() {
-            DataStorage.exportData();
-            showNotification('Данные экспортированы!', 'success');
-        }
-
-        function importData() {
-            document.getElementById('import-file').click();
-        }
-
-        function clearData() {
-            DataStorage.clearData();
-        }
-
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+        function testFeature(type) {
+            dashboard.showNotification(`Функция "${type}" протестирована!`, 'success');
         }
 
         // Инициализация приложения
-        const app = new App();
+        const dashboard = new BotDashboard();
 
         // Обработка OAuth callback при загрузке
         window.addEventListener('load', () => {
-            app.handleOAuthCallback();
+            dashboard.handleOAuthCallback();
         });
-
-        // Загружаем сохраненный Client ID
-        document.getElementById('client-id-input').value = CONFIG.clientId;
-        if (CONFIG.clientId) {
-            app.updateDiscordLoginUrl();
-        }
     </script>
 </body>
 </html>
