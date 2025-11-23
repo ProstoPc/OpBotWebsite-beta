@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpBot - Реальная панель управления</title>
+    <title>OpBot - Панель управления</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Стили остаются такими же как в предыдущем варианте */
         :root {
             --primary-dark: #0a0a0a;
             --secondary-dark: #121212;
@@ -38,8 +37,364 @@
             padding: 0 20px;
         }
 
-        /* Все остальные стили из предыдущего примера */
-        /* ... */
+        header {
+            background-color: var(--secondary-dark);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--light-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-blue);
+            color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-discord {
+            background-color: #5865F2;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-discord:hover {
+            background-color: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        .auth-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: var(--secondary-dark);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-section {
+            padding: 40px 0;
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--secondary-dark);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            margin: 10px 0;
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .server-card {
+            background-color: var(--secondary-dark);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .server-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.2);
+        }
+
+        .server-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .server-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .server-management {
+            padding: 40px 0;
+            display: none;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .management-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--accent-blue);
+        }
+
+        .tab.active {
+            border-bottom-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .setting-group {
+            background-color: var(--secondary-dark);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .json-editor {
+            width: 100%;
+            height: 300px;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        .preview-area {
+            background-color: var(--primary-dark);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            min-height: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .channel-select, .role-select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-blue);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--error);
+        }
+
+        .config-section {
+            background: var(--secondary-dark);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: var(--primary-dark);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -70,16 +425,25 @@
                 <h2>Авторизация через Discord</h2>
                 <p>Для управления ботом необходимо авторизоваться через Discord</p>
                 
-                <a href="/auth/discord" class="btn btn-discord" id="discord-login">
+                <div class="config-section">
+                    <h4><i class="fas fa-cog"></i> Настройка Client ID</h4>
+                    <input type="text" id="client-id-input" class="config-input" placeholder="Введите ваш Discord Client ID">
+                    <button class="btn btn-primary" onclick="saveClientId()">
+                        <i class="fas fa-save"></i> Сохранить Client ID
+                    </button>
+                </div>
+
+                <a href="#" class="btn btn-discord" id="discord-login" style="display: none;">
                     <i class="fab fa-discord"></i> Войти через Discord
                 </a>
 
                 <div style="margin-top: 30px; padding: 20px; background: var(--primary-dark); border-radius: 8px;">
-                    <h4><i class="fas fa-info-circle"></i> Требования</h4>
+                    <h4><i class="fas fa-info-circle"></i> Инструкция</h4>
                     <p style="margin: 10px 0; color: var(--text-gray); font-size: 14px;">
-                        • Бот должен быть добавлен на сервер<br>
-                        • Вы должны иметь права администратора<br>
-                        • JavaScript должен быть включен
+                        1. Получите Client ID в Discord Developer Portal<br>
+                        2. Введите его в поле выше и сохраните<br>
+                        3. Нажмите "Войти через Discord"<br>
+                        4. Все данные сохраняются локально в JSON
                     </p>
                 </div>
             </div>
@@ -108,44 +472,362 @@
                     <div>Активных функций</div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-bolt"></i>
-                    <div class="stat-number" id="uptime">100%</div>
-                    <div>Аптайм</div>
+                    <i class="fas fa-database"></i>
+                    <div class="stat-number" id="data-size">0 KB</div>
+                    <div>Размер данных</div>
                 </div>
+            </div>
+
+            <div class="server-actions" style="margin: 20px 0;">
+                <button class="btn btn-success" onclick="exportData()">
+                    <i class="fas fa-download"></i> Экспорт данных
+                </button>
+                <button class="btn btn-warning" onclick="importData()">
+                    <i class="fas fa-upload"></i> Импорт данных
+                </button>
+                <button class="btn btn-secondary" onclick="clearData()">
+                    <i class="fas fa-trash"></i> Очистить данные
+                </button>
             </div>
 
             <h3>Ваши серверы</h3>
             <div class="servers-grid" id="servers-grid">
-                <div class="loading" style="text-align: center; padding: 40px;">
+                <div class="loading" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
                     <i class="fas fa-spinner fa-spin"></i> Загрузка серверов...
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Server Management Section (остается таким же) -->
-    <!-- ... -->
+    <!-- Server Management -->
+    <section class="server-management" id="server-management">
+        <div class="container">
+            <div class="management-header">
+                <h2 id="server-name">Управление сервером</h2>
+                <button class="btn btn-secondary" id="back-btn">
+                    <i class="fas fa-arrow-left"></i> Назад к серверам
+                </button>
+            </div>
+
+            <div class="management-tabs">
+                <div class="tab active" data-tab="welcome">Приветствие</div>
+                <div class="tab" data-tab="farewell">Прощание</div>
+                <div class="tab" data-tab="autorole">Автороль</div>
+                <div class="tab" data-tab="moderation">Модерация</div>
+            </div>
+
+            <!-- Welcome Settings -->
+            <div class="tab-content active" id="welcome-tab">
+                <div class="setting-group">
+                    <h3><i class="fas fa-door-open"></i> Настройка приветственного сообщения</h3>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">Статус функции:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="welcome-enabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="welcome-status-text" style="margin-left: 10px;">Выключено</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Канал для приветствий:</label>
+                        <select class="channel-select" id="welcome-channel">
+                            <option value="">Выберите канал</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">JSON редактор сообщения:</label>
+                        <textarea class="json-editor" id="welcome-json" placeholder="Введите JSON структуру сообщения...">
+{
+  "content": "Добро пожаловать, {user}!",
+  "embeds": [
+    {
+      "title": "🎉 Добро пожаловать!",
+      "description": "Рады видеть тебя на нашем сервере, {user}!",
+      "color": 3447003,
+      "thumbnail": {
+        "url": "{user_avatar}"
+      },
+      "fields": [
+        {
+          "name": "👥 Участник",
+          "value": "{user} (№{member_count})",
+          "inline": true
+        }
+      ],
+      "timestamp": "{join_time}"
+    }
+  ]
+}</textarea>
+                    </div>
+                    
+                    <div class="preview-area" id="welcome-preview">
+                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
+                        <div id="welcome-preview-content" style="margin-top: 10px; color: var(--text-gray);">
+                            Предпросмотр будет отображен здесь после ввода валидного JSON
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveSettings('welcome')">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Farewell Settings -->
+            <div class="tab-content" id="farewell-tab">
+                <div class="setting-group">
+                    <h3><i class="fas fa-door-closed"></i> Настройка сообщения прощания</h3>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">Статус функции:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="farewell-enabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="farewell-status-text" style="margin-left: 10px;">Выключено</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Канал для прощаний:</label>
+                        <select class="channel-select" id="farewell-channel">
+                            <option value="">Выберите канал</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">JSON редактор сообщения:</label>
+                        <textarea class="json-editor" id="farewell-json" placeholder="Введите JSON структуру сообщения...">
+{
+  "content": "Пока, {user}!",
+  "embeds": [
+    {
+      "title": "👋 Прощание",
+      "description": "{user} покинул нас :(",
+      "color": 15158332,
+      "thumbnail": {
+        "url": "{user_avatar}"
+      },
+      "timestamp": "{leave_time}"
+    }
+  ]
+}</textarea>
+                    </div>
+                    
+                    <div class="preview-area" id="farewell-preview">
+                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
+                        <div id="farewell-preview-content" style="margin-top: 10px; color: var(--text-gray);">
+                            Предпросмотр будет отображен здесь после ввода валидного JSON
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveSettings('farewell')">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Autorole Settings -->
+            <div class="tab-content" id="autorole-tab">
+                <div class="setting-group">
+                    <h3><i class="fas fa-user-plus"></i> Настройка автороли</h3>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">Статус функции:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autorole-enabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="autorole-status-text" style="margin-left: 10px;">Выключено</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Роль для выдачи:</label>
+                        <select class="role-select" id="autorole-role">
+                            <option value="">Выберите роль</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveSettings('autorole')">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
+
+            <!-- Moderation Settings -->
+            <div class="tab-content" id="moderation-tab">
+                <div class="setting-group">
+                    <h3><i class="fas fa-shield-alt"></i> Настройки модерации</h3>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">Автоматическая модерация:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="automod-enabled">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="automod-status-text" style="margin-left: 10px;">Выключено</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Максимальное количество предупреждений:</label>
+                        <input type="number" id="max-warnings" class="channel-select" value="3" min="1" max="10">
+                    </div>
+
+                    <h4 style="margin-top: 20px;">Фильтры контента:</h4>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="filter-links">
+                            Блокировать ссылки
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="filter-invites">
+                            Блокировать приглашения
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="saveSettings('moderation')">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <input type="file" id="import-file" style="display: none;" accept=".json">
 
     <script>
-        class RealDiscordDashboard {
-            constructor() {
-                this.sessionId = null;
-                this.currentUser = null;
-                this.userGuilds = [];
-                this.currentGuild = null;
-                this.apiBaseUrl = '';
-                
-                this.init();
-            }
+        // Конфигурация
+        const CONFIG = {
+            clientId: localStorage.getItem('discord_client_id') || '',
+            redirectUri: window.location.origin + window.location.pathname,
+            scope: 'identify guilds'
+        };
 
-            async init() {
-                this.setupEventListeners();
-                await this.checkAuth();
+        // Хранилище данных в JSON формате
+        const DataStorage = {
+            // Получить все данные
+            getAllData() {
+                const data = {
+                    clientId: CONFIG.clientId,
+                    user: JSON.parse(localStorage.getItem('discord_user') || 'null'),
+                    guilds: JSON.parse(localStorage.getItem('discord_guilds') || '[]'),
+                    settings: JSON.parse(localStorage.getItem('bot_settings') || '{}'),
+                    lastUpdate: new Date().toISOString()
+                };
+                return data;
+            },
+
+            // Сохранить пользователя
+            saveUser(user) {
+                localStorage.setItem('discord_user', JSON.stringify(user));
+                this.updateDataSize();
+            },
+
+            // Сохранить серверы
+            saveGuilds(guilds) {
+                localStorage.setItem('discord_guilds', JSON.stringify(guilds));
+                this.updateDataSize();
+            },
+
+            // Сохранить настройки сервера
+            saveServerSettings(guildId, settings) {
+                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
+                allSettings[guildId] = settings;
+                localStorage.setItem('bot_settings', JSON.stringify(allSettings));
+                this.updateDataSize();
+            },
+
+            // Получить настройки сервера
+            getServerSettings(guildId) {
+                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
+                return allSettings[guildId] || {};
+            },
+
+            // Обновить размер данных
+            updateDataSize() {
+                const data = JSON.stringify(this.getAllData());
+                const size = new Blob([data]).size;
+                document.getElementById('data-size').textContent = Math.round(size / 1024) + ' KB';
+            },
+
+            // Экспорт данных
+            exportData() {
+                const data = this.getAllData();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `opbot-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            },
+
+            // Импорт данных
+            importData(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (data.clientId) {
+                            localStorage.setItem('discord_client_id', data.clientId);
+                            CONFIG.clientId = data.clientId;
+                        }
+                        if (data.user) localStorage.setItem('discord_user', JSON.stringify(data.user));
+                        if (data.guilds) localStorage.setItem('discord_guilds', JSON.stringify(data.guilds));
+                        if (data.settings) localStorage.setItem('bot_settings', JSON.stringify(data.settings));
+                        
+                        this.updateDataSize();
+                        showNotification('Данные успешно импортированы!', 'success');
+                        
+                        // Перезагружаем интерфейс
+                        if (data.user) {
+                            loadUserData();
+                        }
+                    } catch (error) {
+                        showNotification('Ошибка при импорте данных', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            },
+
+            // Очистить все данные
+            clearData() {
+                if (confirm('Вы уверены, что хотите очистить все данные? Это действие нельзя отменить.')) {
+                    localStorage.removeItem('discord_user');
+                    localStorage.removeItem('discord_guilds');
+                    localStorage.removeItem('bot_settings');
+                    this.updateDataSize();
+                    showNotification('Все данные очищены', 'success');
+                    showAuth();
+                }
             }
+        };
+
+        // Основное приложение
+        const App = {
+            currentUser: null,
+            userGuilds: [],
+            currentGuild: null,
+
+            init() {
+                this.setupEventListeners();
+                this.checkAuth();
+                DataStorage.updateDataSize();
+            },
 
             setupEventListeners() {
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
                 document.getElementById('back-btn').addEventListener('click', () => this.showDashboard());
+                document.getElementById('import-file').addEventListener('change', (e) => {
+                    if (e.target.files[0]) {
+                        DataStorage.importData(e.target.files[0]);
+                    }
+                });
 
                 // Вкладки
                 document.querySelectorAll('.tab').forEach(tab => {
@@ -167,53 +849,88 @@
                 // JSON редакторы
                 document.getElementById('welcome-json').addEventListener('input', () => this.updatePreview('welcome'));
                 document.getElementById('farewell-json').addEventListener('input', () => this.updatePreview('farewell'));
-            }
+            },
 
-            async checkAuth() {
-                // Проверяем sessionId в URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const sessionParam = urlParams.get('session');
+            checkAuth() {
+                const user = JSON.parse(localStorage.getItem('discord_user') || 'null');
+                const guilds = JSON.parse(localStorage.getItem('discord_guilds') || '[]');
                 
-                if (sessionParam) {
-                    this.sessionId = sessionParam;
-                    // Очищаем URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    await this.loadUserData();
+                if (user && guilds.length > 0) {
+                    this.currentUser = user;
+                    this.userGuilds = guilds;
+                    this.showDashboard();
+                    this.updateUserInfo();
+                    this.loadGuilds();
                 } else {
                     this.showAuth();
                 }
-            }
 
-            async loadUserData() {
-                try {
-                    const userResponse = await this.apiCall('/api/user');
-                    this.currentUser = userResponse.user;
+                // Обновляем ссылку Discord OAuth
+                this.updateDiscordLoginUrl();
+            },
+
+            updateDiscordLoginUrl() {
+                if (CONFIG.clientId) {
+                    const params = new URLSearchParams({
+                        client_id: CONFIG.clientId,
+                        redirect_uri: CONFIG.redirectUri,
+                        response_type: 'token',
+                        scope: CONFIG.scope
+                    });
                     
-                    await this.loadGuilds();
-                    this.showDashboard();
-                    this.updateUserInfo();
-                    
-                } catch (error) {
-                    console.error('Failed to load user data:', error);
-                    this.showNotification('Ошибка загрузки данных', 'error');
-                    this.showAuth();
+                    document.getElementById('discord-login').href = 
+                        `https://discord.com/oauth2/authorize?${params}`;
+                    document.getElementById('discord-login').style.display = 'inline-flex';
                 }
-            }
+            },
 
-            async loadGuilds() {
-                try {
-                    const guildsResponse = await this.apiCall('/api/guilds');
-                    this.userGuilds = guildsResponse.guilds;
-                    this.renderGuilds();
-                    this.updateStats();
-                    
-                } catch (error) {
-                    console.error('Failed to load guilds:', error);
-                    this.showNotification('Ошибка загрузки серверов', 'error');
+            async handleOAuthCallback() {
+                const hash = window.location.hash.substring(1);
+                const params = new URLSearchParams(hash);
+                const accessToken = params.get('access_token');
+                
+                if (accessToken) {
+                    try {
+                        await this.loadUserData(accessToken);
+                        // Очищаем URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } catch (error) {
+                        console.error('OAuth callback failed:', error);
+                        showNotification('Ошибка авторизации', 'error');
+                    }
                 }
-            }
+            },
 
-            renderGuilds() {
+            async loadUserData(accessToken) {
+                // Загружаем данные пользователя через Discord API
+                const userResponse = await fetch('https://discord.com/api/users/@me', {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const user = await userResponse.json();
+                
+                const guildsResponse = await fetch('https://discord.com/api/users/@me/guilds', {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                const guilds = await guildsResponse.json();
+                
+                // Фильтруем серверы где пользователь администратор
+                const adminGuilds = guilds.filter(guild => (guild.permissions & 0x8) === 0x8);
+                
+                // Сохраняем данные
+                DataStorage.saveUser(user);
+                DataStorage.saveGuilds(adminGuilds);
+                
+                this.currentUser = user;
+                this.userGuilds = adminGuilds;
+                
+                this.showDashboard();
+                this.updateUserInfo();
+                this.loadGuilds();
+                
+                showNotification('Успешная авторизация!', 'success');
+            },
+
+            loadGuilds() {
                 const grid = document.getElementById('servers-grid');
                 
                 if (this.userGuilds.length === 0) {
@@ -221,7 +938,7 @@
                         <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">
                             <i class="fas fa-server" style="font-size: 3rem; color: var(--text-gray); margin-bottom: 20px;"></i>
                             <h3>Нет доступных серверов</h3>
-                            <p>У вас нет серверов с правами администратора или бот не добавлен на сервер</p>
+                            <p>У вас нет серверов с правами администратора</p>
                         </div>
                     `;
                     return;
@@ -243,9 +960,9 @@
                             `<div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>`
                         }
                         <h3>${guild.name}</h3>
-                        <p>👥 Участников: ${guild.member_count?.toLocaleString() || 'N/A'}</p>
+                        <p>👥 Участников: ${guild.approximate_member_count?.toLocaleString() || 'N/A'}</p>
                         <div class="server-actions">
-                            <button class="btn btn-primary" onclick="dashboard.manageServer('${guild.id}')">
+                            <button class="btn btn-primary" onclick="app.manageServer('${guild.id}')">
                                 <i class="fas fa-cog"></i> Управлять
                             </button>
                         </div>
@@ -253,39 +970,41 @@
                     
                     grid.appendChild(card);
                 });
-            }
 
-            async manageServer(guildId) {
+                this.updateStats();
+            },
+
+            manageServer(guildId) {
                 const guild = this.userGuilds.find(g => g.id === guildId);
                 if (guild) {
                     this.currentGuild = guild;
                     document.getElementById('server-name').textContent = `Управление: ${guild.name}`;
-                    
                     this.showServerManagement();
-                    await this.loadServerData(guildId);
+                    this.loadServerData(guild);
                 }
-            }
+            },
 
-            async loadServerData(guildId) {
-                try {
-                    // Загружаем каналы
-                    const channelsResponse = await this.apiCall(`/api/guilds/${guildId}/channels`);
-                    this.fillChannelSelect('welcome-channel', channelsResponse.channels);
-                    this.fillChannelSelect('farewell-channel', channelsResponse.channels);
-                    this.fillChannelSelect('modlog-channel', channelsResponse.channels);
-                    
-                    // Загружаем роли
-                    const rolesResponse = await this.apiCall(`/api/guilds/${guildId}/roles`);
-                    this.fillRoleSelect('autorole-role', rolesResponse.roles);
-                    
-                    // Загружаем текущие настройки
-                    await this.loadCurrentSettings(guildId);
-                    
-                } catch (error) {
-                    console.error('Failed to load server data:', error);
-                    this.showNotification('Ошибка загрузки данных сервера', 'error');
-                }
-            }
+            loadServerData(guild) {
+                // В реальном приложении здесь бы загружались каналы и роли через API
+                // Для демо создаем mock данные
+                const mockChannels = [
+                    { id: '1', name: 'общий', type: 0 },
+                    { id: '2', name: 'приветствия', type: 0 },
+                    { id: '3', name: 'логи', type: 0 }
+                ];
+                
+                const mockRoles = [
+                    { id: '1', name: 'Участник' },
+                    { id: '2', name: 'Модератор' },
+                    { id: '3', name: 'Администратор' }
+                ];
+
+                this.fillChannelSelect('welcome-channel', mockChannels);
+                this.fillChannelSelect('farewell-channel', mockChannels);
+                this.fillRoleSelect('autorole-role', mockRoles);
+                
+                this.loadCurrentSettings(guild.id);
+            },
 
             fillChannelSelect(selectId, channels) {
                 const select = document.getElementById(selectId);
@@ -297,7 +1016,7 @@
                     option.textContent = `#${channel.name}`;
                     select.appendChild(option);
                 });
-            }
+            },
 
             fillRoleSelect(selectId, roles) {
                 const select = document.getElementById(selectId);
@@ -309,105 +1028,90 @@
                     option.textContent = role.name;
                     select.appendChild(option);
                 });
-            }
+            },
 
-            async loadCurrentSettings(guildId) {
-                try {
-                    const settings = await this.apiCall(`/api/guilds/${guildId}/settings`);
-                    
-                    // Заполняем формы текущими настройками
-                    if (settings.welcome) {
-                        document.getElementById('welcome-enabled').checked = settings.welcome.enabled || false;
-                        document.getElementById('welcome-channel').value = settings.welcome.channel_id || '';
-                        if (settings.welcome.message) {
-                            document.getElementById('welcome-json').value = JSON.stringify(settings.welcome.message, null, 2);
-                        }
-                    }
-
-                    // Обновляем статусы toggle switches
-                    document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-                        toggle.dispatchEvent(new Event('change'));
-                    });
-
-                    this.updatePreview('welcome');
-                    this.updatePreview('farewell');
-                    
-                } catch (error) {
-                    console.error('Failed to load settings:', error);
-                }
-            }
-
-            async saveSettings(type) {
-                if (!this.currentGuild) return;
-
-                try {
-                    const settings = {};
-                    const guildId = this.currentGuild.id;
-
-                    switch (type) {
-                        case 'welcome':
-                            settings.welcome = {
-                                enabled: document.getElementById('welcome-enabled').checked,
-                                channel_id: document.getElementById('welcome-channel').value,
-                                message: JSON.parse(document.getElementById('welcome-json').value)
-                            };
-                            break;
-                        case 'farewell':
-                            settings.farewell = {
-                                enabled: document.getElementById('farewell-enabled').checked,
-                                channel_id: document.getElementById('farewell-channel').value,
-                                message: JSON.parse(document.getElementById('farewell-json').value)
-                            };
-                            break;
-                        case 'autorole':
-                            settings.autorole = {
-                                enabled: document.getElementById('autorole-enabled').checked,
-                                role_id: document.getElementById('autorole-role').value,
-                                delay: parseInt(document.getElementById('autorole-delay').value) || 0
-                            };
-                            break;
-                    }
-
-                    await this.apiCall(`/api/guilds/${guildId}/settings`, 'POST', settings);
-                    this.showNotification('Настройки сохранены успешно!', 'success');
-                    this.updateStats();
-                    
-                } catch (error) {
-                    console.error('Save failed:', error);
-                    this.showNotification('Ошибка при сохранении настроек', 'error');
-                }
-            }
-
-            async apiCall(endpoint, method = 'GET', body = null) {
-                const options = {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${this.sessionId}`,
-                        'Content-Type': 'application/json'
-                    }
-                };
-
-                if (body) {
-                    options.body = JSON.stringify(body);
-                }
-
-                const response = await fetch(endpoint, options);
+            loadCurrentSettings(guildId) {
+                const settings = DataStorage.getServerSettings(guildId);
                 
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        this.logout();
-                        throw new Error('Unauthorized');
+                if (settings.welcome) {
+                    document.getElementById('welcome-enabled').checked = settings.welcome.enabled || false;
+                    document.getElementById('welcome-channel').value = settings.welcome.channel_id || '';
+                    if (settings.welcome.message) {
+                        document.getElementById('welcome-json').value = JSON.stringify(settings.welcome.message, null, 2);
                     }
-                    throw new Error(`API error: ${response.status}`);
                 }
 
-                return await response.json();
-            }
+                if (settings.farewell) {
+                    document.getElementById('farewell-enabled').checked = settings.farewell.enabled || false;
+                    document.getElementById('farewell-channel').value = settings.farewell.channel_id || '';
+                    if (settings.farewell.message) {
+                        document.getElementById('farewell-json').value = JSON.stringify(settings.farewell.message, null, 2);
+                    }
+                }
+
+                if (settings.autorole) {
+                    document.getElementById('autorole-enabled').checked = settings.autorole.enabled || false;
+                    document.getElementById('autorole-role').value = settings.autorole.role_id || '';
+                }
+
+                if (settings.moderation) {
+                    document.getElementById('automod-enabled').checked = settings.moderation.enabled || false;
+                    document.getElementById('max-warnings').value = settings.moderation.max_warnings || 3;
+                    document.getElementById('filter-links').checked = settings.moderation.filter_links || false;
+                    document.getElementById('filter-invites').checked = settings.moderation.filter_invites || false;
+                }
+
+                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                    toggle.dispatchEvent(new Event('change'));
+                });
+
+                this.updatePreview('welcome');
+                this.updatePreview('farewell');
+            },
+
+            updateStats() {
+                document.getElementById('servers-count').textContent = this.userGuilds.length;
+                
+                const totalMembers = this.userGuilds.reduce((sum, guild) => 
+                    sum + (guild.approximate_member_count || 0), 0
+                );
+                document.getElementById('total-members').textContent = totalMembers.toLocaleString();
+                
+                // Считаем активные функции
+                let activeFeatures = 0;
+                this.userGuilds.forEach(guild => {
+                    const settings = DataStorage.getServerSettings(guild.id);
+                    if (settings.welcome?.enabled) activeFeatures++;
+                    if (settings.farewell?.enabled) activeFeatures++;
+                    if (settings.autorole?.enabled) activeFeatures++;
+                    if (settings.moderation?.enabled) activeFeatures++;
+                });
+                document.getElementById('active-features').textContent = activeFeatures;
+            },
+
+            showAuth() {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('server-management').style.display = 'none';
+                document.getElementById('user-info').style.display = 'none';
+            },
+
+            showDashboard() {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('server-management').style.display = 'none';
+                document.getElementById('user-info').style.display = 'flex';
+            },
+
+            showServerManagement() {
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('server-management').style.display = 'block';
+            },
 
             updateUserInfo() {
                 if (this.currentUser) {
-                    const userName = `${this.currentUser.username}#${this.currentUser.discriminator}`;
-                    document.getElementById('user-name').textContent = userName;
+                    document.getElementById('user-name').textContent = 
+                        `${this.currentUser.username}#${this.currentUser.discriminator}`;
                     
                     const avatarUrl = this.currentUser.avatar 
                         ? `https://cdn.discordapp.com/avatars/${this.currentUser.id}/${this.currentUser.avatar}.png`
@@ -415,62 +1119,16 @@
                     
                     document.getElementById('user-avatar').src = avatarUrl;
                 }
-            }
+            },
 
-            updateStats() {
-                document.getElementById('servers-count').textContent = this.userGuilds.length;
-                
-                const totalMembers = this.userGuilds.reduce((sum, guild) => 
-                    sum + (guild.member_count || 0), 0
-                );
-                document.getElementById('total-members').textContent = totalMembers.toLocaleString();
-                
-                // Здесь можно добавить подсчет активных функций
-                document.getElementById('active-features').textContent = '0';
-            }
-
-            showAuth() {
-                document.getElementById('auth-section').style.display = 'block';
-                document.getElementById('dashboard-section').style.display = 'none';
-                document.getElementById('server-management').style.display = 'none';
-                document.getElementById('user-info').style.display = 'none';
-            }
-
-            showDashboard() {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
-                document.getElementById('server-management').style.display = 'none';
-                document.getElementById('user-info').style.display = 'flex';
-            }
-
-            showServerManagement() {
-                document.getElementById('dashboard-section').style.display = 'none';
-                document.getElementById('server-management').style.display = 'block';
-            }
-
-            async logout() {
-                try {
-                    await this.apiCall('/api/logout', 'POST');
-                } catch (error) {
-                    // Игнорируем ошибки при logout
-                }
-                
-                this.sessionId = null;
+            logout() {
+                localStorage.removeItem('discord_user');
+                localStorage.removeItem('discord_guilds');
                 this.currentUser = null;
                 this.userGuilds = [];
                 this.showAuth();
-                this.showNotification('Вы вышли из системы', 'success');
-            }
-
-            showNotification(message, type = 'success') {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = `notification ${type} show`;
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            }
+                showNotification('Вы вышли из системы', 'success');
+            },
 
             switchTab(tabName) {
                 document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -478,7 +1136,7 @@
                 
                 document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
-            }
+            },
 
             updatePreview(type) {
                 const jsonTextarea = document.getElementById(`${type}-json`);
@@ -503,22 +1161,104 @@
                     `;
                 }
             }
+        };
+
+        // Глобальные функции
+        function saveClientId() {
+            const clientId = document.getElementById('client-id-input').value.trim();
+            if (clientId) {
+                localStorage.setItem('discord_client_id', clientId);
+                CONFIG.clientId = clientId;
+                App.updateDiscordLoginUrl();
+                showNotification('Client ID сохранен!', 'success');
+            } else {
+                showNotification('Введите Client ID', 'error');
+            }
         }
 
-        // Глобальные функции для кнопок
-        async function saveSettings(type) {
-            await dashboard.saveSettings(type);
+        function saveSettings(type) {
+            if (!App.currentGuild) return;
+
+            const settings = {};
+
+            try {
+                switch (type) {
+                    case 'welcome':
+                        settings.welcome = {
+                            enabled: document.getElementById('welcome-enabled').checked,
+                            channel_id: document.getElementById('welcome-channel').value,
+                            message: JSON.parse(document.getElementById('welcome-json').value)
+                        };
+                        break;
+                    case 'farewell':
+                        settings.farewell = {
+                            enabled: document.getElementById('farewell-enabled').checked,
+                            channel_id: document.getElementById('farewell-channel').value,
+                            message: JSON.parse(document.getElementById('farewell-json').value)
+                        };
+                        break;
+                    case 'autorole':
+                        settings.autorole = {
+                            enabled: document.getElementById('autorole-enabled').checked,
+                            role_id: document.getElementById('autorole-role').value
+                        };
+                        break;
+                    case 'moderation':
+                        settings.moderation = {
+                            enabled: document.getElementById('automod-enabled').checked,
+                            max_warnings: parseInt(document.getElementById('max-warnings').value) || 3,
+                            filter_links: document.getElementById('filter-links').checked,
+                            filter_invites: document.getElementById('filter-invites').checked
+                        };
+                        break;
+                }
+
+                DataStorage.saveServerSettings(App.currentGuild.id, settings);
+                showNotification('Настройки сохранены успешно!', 'success');
+                App.updateStats();
+                
+            } catch (error) {
+                console.error('Save failed:', error);
+                showNotification('Ошибка при сохранении настроек', 'error');
+            }
         }
 
-        function testFeature(type) {
-            dashboard.showNotification(`Функция "${type}" протестирована!`, 'success');
+        function exportData() {
+            DataStorage.exportData();
+            showNotification('Данные экспортированы!', 'success');
         }
 
-        // Инициализация при загрузке
-        let dashboard;
-        document.addEventListener('DOMContentLoaded', () => {
-            dashboard = new RealDiscordDashboard();
+        function importData() {
+            document.getElementById('import-file').click();
+        }
+
+        function clearData() {
+            DataStorage.clearData();
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Инициализация приложения
+        const app = new App();
+
+        // Обработка OAuth callback при загрузке
+        window.addEventListener('load', () => {
+            app.handleOAuthCallback();
         });
+
+        // Загружаем сохраненный Client ID
+        document.getElementById('client-id-input').value = CONFIG.clientId;
+        if (CONFIG.clientId) {
+            app.updateDiscordLoginUrl();
+        }
     </script>
 </body>
 </html>
