@@ -29,6 +29,7 @@
             background-color: var(--primary-dark);
             color: var(--text-light);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
@@ -37,6 +38,7 @@
             padding: 0 20px;
         }
 
+        /* Header */
         header {
             background-color: var(--secondary-dark);
             padding: 20px 0;
@@ -59,6 +61,7 @@
             font-size: 1.5rem;
             font-weight: bold;
             color: var(--accent-blue);
+            text-decoration: none;
         }
 
         .user-info {
@@ -83,6 +86,9 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -111,28 +117,14 @@
             color: white;
         }
 
-        .btn-discord {
-            background-color: #5865F2;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-
-        .btn-discord:hover {
-            background-color: #4752c4;
-            transform: translateY(-2px);
-        }
-
+        /* Auth Section */
         .auth-section {
             padding: 100px 0;
             text-align: center;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .auth-container {
@@ -144,8 +136,32 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
+        .discord-login-btn {
+            background-color: #5865F2;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .discord-login-btn:hover {
+            background-color: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard */
         .dashboard-section {
             padding: 40px 0;
+            min-height: 80vh;
             display: none;
         }
 
@@ -185,6 +201,9 @@
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .server-card:hover {
@@ -201,14 +220,10 @@
             border: 2px solid var(--accent-blue);
         }
 
-        .server-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
+        /* Server Management */
         .server-management {
             padding: 40px 0;
+            min-height: 80vh;
             display: none;
         }
 
@@ -226,6 +241,7 @@
             gap: 10px;
             margin-bottom: 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -233,6 +249,7 @@
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
+            white-space: nowrap;
         }
 
         .tab:hover {
@@ -374,21 +391,35 @@
             background-color: var(--error);
         }
 
-        .admin-info {
-            background: linear-gradient(135deg, var(--accent-blue), var(--light-blue));
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: var(--text-gray);
         }
 
-        .permission-badge {
-            background: var(--success);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-left: 10px;
+        .breadcrumb a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .management-tabs {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .management-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
@@ -398,10 +429,10 @@
     <header>
         <div class="container">
             <nav class="navbar">
-                <div class="logo">
+                <a href="/" class="logo">
                     <i class="fas fa-robot"></i>
-                    <span>OpBot Dashboard</span>
-                </div>
+                    <span>OpBot</span>
+                </a>
                 <div class="user-info" id="user-info" style="display: none;">
                     <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
                     <span id="user-name"></span>
@@ -417,25 +448,19 @@
     <section class="auth-section" id="auth-section">
         <div class="container">
             <div class="auth-container">
-                <div class="admin-info">
-                    <h3><i class="fas fa-crown"></i> Управление ботом</h3>
-                    <p>Панель управления для бота на ваших серверах</p>
-                </div>
-
-                <h2>Авторизация через Discord</h2>
-                <p>Для управления настройками бота необходимо авторизоваться</p>
-                
-                <a href="#" class="btn btn-discord" id="discord-login">
+                <h1>Добро пожаловать в OpBot</h1>
+                <p style="margin: 20px 0; color: var(--text-gray);">
+                    Мощный Discord бот с расширенными возможностями модерации и управления
+                </p>
+                <button class="discord-login-btn" id="discord-login">
                     <i class="fab fa-discord"></i> Войти через Discord
-                </a>
-
+                </button>
                 <div style="margin-top: 30px; padding: 20px; background: var(--primary-dark); border-radius: 8px;">
-                    <h4><i class="fas fa-info-circle"></i> Информация</h4>
-                    <p style="margin: 10px 0; color: var(--text-gray); font-size: 14px;">
-                        • Вы сможете управлять ботом на серверах<br>
-                        • Требуются права администратора на серверах<br>
-                        • Все настройки сохраняются автоматически
-                    </p>
+                    <h4>Демо-режим</h4>
+                    <p style="margin: 10px 0; color: var(--text-gray);">Для тестирования используйте демо-аккаунт</p>
+                    <button class="btn btn-primary" id="demo-login">
+                        <i class="fas fa-play"></i> Войти в демо-режим
+                    </button>
                 </div>
             </div>
         </div>
@@ -444,13 +469,18 @@
     <!-- Dashboard Section -->
     <section class="dashboard-section" id="dashboard-section">
         <div class="container">
-            <h2>Панель управления ботом</h2>
+            <div class="breadcrumb">
+                <a href="/">Главная</a> / Панель управления
+            </div>
+            
+            <h1>Панель управления</h1>
+            <p style="color: var(--text-gray); margin-bottom: 30px;">Выберите сервер для управления</p>
             
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-server"></i>
                     <div class="stat-number" id="servers-count">0</div>
-                    <div>Доступных серверов</div>
+                    <div>Серверов</div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
@@ -463,17 +493,15 @@
                     <div>Активных функций</div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-robot"></i>
-                    <div class="stat-number" id="bot-status">Online</div>
-                    <div>Статус бота</div>
+                    <i class="fas fa-bolt"></i>
+                    <div class="stat-number" id="uptime">100%</div>
+                    <div>Аптайм</div>
                 </div>
             </div>
 
-            <h3>Серверы с ботом</h3>
+            <h2>Ваши серверы</h2>
             <div class="servers-grid" id="servers-grid">
-                <div class="loading" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
-                    <i class="fas fa-spinner fa-spin"></i> Загрузка серверов...
-                </div>
+                <!-- Серверы загружаются динамически -->
             </div>
         </div>
     </section>
@@ -481,11 +509,17 @@
     <!-- Server Management -->
     <section class="server-management" id="server-management">
         <div class="container">
+            <div class="breadcrumb">
+                <a href="/">Главная</a> / 
+                <a href="/dashboard">Панель управления</a> / 
+                <span id="current-server-name">Сервер</span>
+            </div>
+
             <div class="management-header">
-                <h2 id="server-name">Управление сервером</h2>
-                <button class="btn btn-secondary" id="back-btn">
+                <h1 id="server-name">Управление сервером</h1>
+                <a href="/dashboard" class="btn btn-secondary" id="back-btn">
                     <i class="fas fa-arrow-left"></i> Назад к серверам
-                </button>
+                </a>
             </div>
 
             <div class="management-tabs">
@@ -493,7 +527,6 @@
                 <div class="tab" data-tab="farewell">Прощание</div>
                 <div class="tab" data-tab="autorole">Автороль</div>
                 <div class="tab" data-tab="moderation">Модерация</div>
-                <div class="tab" data-tab="logs">Логи</div>
             </div>
 
             <!-- Welcome Settings -->
@@ -518,25 +551,48 @@
                     </div>
                     
                     <div class="setting-item">
-                        <label class="setting-label">Текст сообщения:</label>
-                        <textarea class="json-editor" id="welcome-message" placeholder="Введите текст приветственного сообщения...">
-Добро пожаловать, {user}!
-
-Мы рады видеть тебя на нашем сервере! 🎉
-
-📋 Обязательно ознакомься с правилами
-💬 Общайся в соответствующих каналах
-🎮 Участвуй в активностях
-
-Ты наш {member_count}-й участник!
-                        </textarea>
+                        <label class="setting-label">JSON редактор сообщения:</label>
+                        <textarea class="json-editor" id="welcome-json" placeholder="Введите JSON структуру сообщения...">
+{
+  "content": "Добро пожаловать, {user}!",
+  "embeds": [
+    {
+      "title": "🎉 Добро пожаловать!",
+      "description": "Рады видеть тебя на нашем сервере, {user}!",
+      "color": 3447003,
+      "thumbnail": {
+        "url": "{user_avatar}"
+      },
+      "fields": [
+        {
+          "name": "👥 Участник",
+          "value": "{user} (№{member_count})",
+          "inline": true
+        },
+        {
+          "name": "📅 Присоединился",
+          "value": "{join_time}",
+          "inline": true
+        }
+      ],
+      "timestamp": "{join_time}",
+      "footer": {
+        "text": "Приятного общения!"
+      }
+    }
+  ]
+}</textarea>
+                    </div>
+                    
+                    <div class="preview-area" id="welcome-preview">
+                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
+                        <div id="welcome-preview-content" style="margin-top: 10px; color: var(--text-gray);">
+                            Предпросмотр будет отображен здесь после ввода валидного JSON
+                        </div>
                     </div>
                     
                     <button class="btn btn-success" onclick="saveSettings('welcome')">
                         <i class="fas fa-save"></i> Сохранить настройки
-                    </button>
-                    <button class="btn btn-primary" onclick="testFeature('welcome')">
-                        <i class="fas fa-play"></i> Тестировать
                     </button>
                 </div>
             </div>
@@ -563,14 +619,39 @@
                     </div>
                     
                     <div class="setting-item">
-                        <label class="setting-label">Текст сообщения:</label>
-                        <textarea class="json-editor" id="farewell-message" placeholder="Введите текст сообщения прощания...">
-Пока, {user}! 😔
-
-Надеемся увидеть тебя снова на нашем сервере!
-
-Теперь нас осталось {member_count} участников.
-                        </textarea>
+                        <label class="setting-label">JSON редактор сообщения:</label>
+                        <textarea class="json-editor" id="farewell-json" placeholder="Введите JSON структуру сообщения...">
+{
+  "content": "Пока, {user}!",
+  "embeds": [
+    {
+      "title": "👋 Прощание",
+      "description": "{user} покинул нас :(",
+      "color": 15158332,
+      "thumbnail": {
+        "url": "{user_avatar}"
+      },
+      "fields": [
+        {
+          "name": "📊 Всего участников",
+          "value": "{member_count}",
+          "inline": true
+        }
+      ],
+      "timestamp": "{leave_time}",
+      "footer": {
+        "text": "Надеемся увидеть снова!"
+      }
+    }
+  ]
+}</textarea>
+                    </div>
+                    
+                    <div class="preview-area" id="farewell-preview">
+                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
+                        <div id="farewell-preview-content" style="margin-top: 10px; color: var(--text-gray);">
+                            Предпросмотр будет отображен здесь после ввода валидного JSON
+                        </div>
                     </div>
                     
                     <button class="btn btn-success" onclick="saveSettings('farewell')">
@@ -626,14 +707,14 @@
                     </div>
 
                     <div class="setting-item">
-                        <label class="setting-label">Канал для логов:</label>
+                        <label class="setting-label">Канал для логов модерации:</label>
                         <select class="channel-select" id="modlog-channel">
                             <option value="">Выберите канал</option>
                         </select>
                     </div>
 
                     <div class="setting-item">
-                        <label class="setting-label">Максимум предупреждений:</label>
+                        <label class="setting-label">Максимальное количество предупреждений:</label>
                         <input type="number" id="max-warnings" class="channel-select" value="3" min="1" max="10">
                     </div>
 
@@ -647,7 +728,7 @@
                     <div class="setting-item">
                         <label style="display: flex; align-items: center; gap: 10px;">
                             <input type="checkbox" id="filter-invites">
-                            Блокировать приглашения Discord
+                            Блокировать приглашения
                         </label>
                     </div>
                     <div class="setting-item">
@@ -662,91 +743,168 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Logs Settings -->
-            <div class="tab-content" id="logs-tab">
-                <div class="setting-group">
-                    <h3><i class="fas fa-clipboard-list"></i> Логи и статистика</h3>
-                    
-                    <div class="setting-item">
-                        <label class="setting-label">Включить логирование:</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="logs-enabled">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="logs-status-text" style="margin-left: 10px;">Выключено</span>
-                    </div>
-
-                    <div class="setting-item">
-                        <label class="setting-label">Канал для логов:</label>
-                        <select class="channel-select" id="logs-channel">
-                            <option value="">Выберите канал</option>
-                        </select>
-                    </div>
-
-                    <h4>Типы событий для логирования:</h4>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="log-joins" checked>
-                            Вход/выход участников
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="log-messages" checked>
-                            Удаление сообщений
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="log-moderation">
-                            Действия модерации
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="log-voice">
-                            Активность в голосовых
-                        </label>
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="saveSettings('logs')">
-                        <i class="fas fa-save"></i> Сохранить настройки
-                    </button>
-                </div>
-            </div>
         </div>
     </section>
 
     <script>
-        // КОНФИГУРАЦИЯ - ЗАМЕНИТЕ НА ВАШ Client ID
-        const CONFIG = {
-            clientId: '1250043764899319940', // ЗАМЕНИТЕ НА ВАШ DISCORD CLIENT ID
-            redirectUri: window.location.origin + window.location.pathname,
-            scope: 'identify guilds',
-            botGuilds: [] // Серверы где бот имеет права администратора
+        // Маршрутизация
+        const Router = {
+            routes: {
+                '/': 'login',
+                '/login': 'login',
+                '/dashboard': 'dashboard',
+                '/server/:id': 'server'
+            },
+
+            init() {
+                window.addEventListener('popstate', () => this.route());
+                this.route();
+            },
+
+            route() {
+                const path = window.location.pathname;
+                
+                // Обработка маршрута сервера
+                const serverMatch = path.match(/^\/server\/([a-zA-Z0-9]+)$/);
+                if (serverMatch) {
+                    const serverId = serverMatch[1];
+                    this.showServerPage(serverId);
+                    return;
+                }
+
+                // Обычные маршруты
+                switch(path) {
+                    case '/':
+                    case '/login':
+                        this.showLoginPage();
+                        break;
+                    case '/dashboard':
+                        this.showDashboardPage();
+                        break;
+                    default:
+                        this.showLoginPage();
+                }
+            },
+
+            navigate(path) {
+                window.history.pushState({}, '', path);
+                this.route();
+            },
+
+            showLoginPage() {
+                if (App.currentUser) {
+                    this.navigate('/dashboard');
+                    return;
+                }
+                App.showAuth();
+            },
+
+            showDashboardPage() {
+                if (!App.currentUser) {
+                    this.navigate('/login');
+                    return;
+                }
+                App.showDashboard();
+            },
+
+            showServerPage(serverId) {
+                if (!App.currentUser) {
+                    this.navigate('/login');
+                    return;
+                }
+                App.manageServer(serverId);
+            }
         };
 
-        class BotDashboard {
-            constructor() {
-                this.currentUser = null;
-                this.userGuilds = [];
-                this.availableGuilds = []; // Серверы где пользователь администратор И есть бот
-                this.currentGuild = null;
-                this.init();
-            }
+        // Хранилище данных
+        const BotData = {
+            demoUser: {
+                id: 'demo123',
+                username: 'DemoUser',
+                discriminator: '0001',
+                avatar: null
+            },
 
-            async init() {
-                this.setupEventListeners();
-                await this.checkAuth();
-                this.updateDiscordLoginUrl();
+            demoGuilds: [
+                {
+                    id: 'guild1',
+                    name: 'Игровое сообщество',
+                    icon: '🎮',
+                    approximate_member_count: 1500,
+                    permissions: '0x20',
+                    channels: [
+                        { id: 'ch1', name: 'общее', type: 0 },
+                        { id: 'ch2', name: 'приветствия', type: 0 },
+                        { id: 'ch3', name: 'логи', type: 0 }
+                    ],
+                    roles: [
+                        { id: 'role1', name: 'Участник' },
+                        { id: 'role2', name: 'Модератор' },
+                        { id: 'role3', name: 'VIP' }
+                    ]
+                },
+                {
+                    id: 'guild2',
+                    name: 'Разработчики',
+                    icon: '💻',
+                    approximate_member_count: 800,
+                    permissions: '0x20',
+                    channels: [
+                        { id: 'ch4', name: 'general', type: 0 },
+                        { id: 'ch5', name: 'welcome', type: 0 }
+                    ],
+                    roles: [
+                        { id: 'role4', name: 'Developer' },
+                        { id: 'role5', name: 'Tester' }
+                    ]
+                }
+            ],
+
+            serverSettings: {},
+
+            init() {
+                const savedSettings = localStorage.getItem('botServerSettings');
+                if (savedSettings) {
+                    this.serverSettings = JSON.parse(savedSettings);
+                }
+
+                const isDemo = localStorage.getItem('demoMode') === 'true';
+                if (isDemo) {
+                    App.currentUser = this.demoUser;
+                    App.userGuilds = this.demoGuilds;
+                }
+            },
+
+            saveSettings(guildId, settings) {
+                if (!this.serverSettings[guildId]) {
+                    this.serverSettings[guildId] = {};
+                }
+                this.serverSettings[guildId] = { ...this.serverSettings[guildId], ...settings };
+                localStorage.setItem('botServerSettings', JSON.stringify(this.serverSettings));
+            },
+
+            getSettings(guildId) {
+                return this.serverSettings[guildId] || {};
             }
+        };
+
+        // Основное приложение
+        const App = {
+            currentUser: null,
+            userGuilds: [],
+            currentGuild: null,
+
+            init() {
+                BotData.init();
+                this.setupEventListeners();
+                Router.init();
+            },
 
             setupEventListeners() {
+                document.getElementById('demo-login').addEventListener('click', () => this.demoLogin());
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
-                document.getElementById('back-btn').addEventListener('click', () => this.showDashboard());
+                document.getElementById('discord-login').addEventListener('click', () => this.demoLogin());
 
-                // Вкладки
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.addEventListener('click', () => {
                         const tabName = tab.dataset.tab;
@@ -754,7 +912,6 @@
                     });
                 });
 
-                // Toggle switches
                 document.querySelectorAll('.toggle-switch input').forEach(toggle => {
                     toggle.addEventListener('change', (e) => {
                         const statusText = e.target.parentElement.nextElementSibling;
@@ -762,249 +919,161 @@
                         statusText.style.color = e.target.checked ? 'var(--success)' : 'var(--error)';
                     });
                 });
-            }
 
-            updateDiscordLoginUrl() {
-                const params = new URLSearchParams({
-                    client_id: CONFIG.clientId,
-                    redirect_uri: CONFIG.redirectUri,
-                    response_type: 'token',
-                    scope: CONFIG.scope
-                });
+                document.getElementById('welcome-json').addEventListener('input', () => this.updatePreview('welcome'));
+                document.getElementById('farewell-json').addEventListener('input', () => this.updatePreview('farewell'));
+            },
+
+            demoLogin() {
+                localStorage.setItem('demoMode', 'true');
+                this.currentUser = BotData.demoUser;
+                this.userGuilds = BotData.demoGuilds;
+                Router.navigate('/dashboard');
+                this.updateUserInfo();
+                this.loadGuilds();
+                this.showNotification('Демо-режим активирован!', 'success');
+            },
+
+            showAuth() {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('server-management').style.display = 'none';
+                document.getElementById('user-info').style.display = 'none';
+            },
+
+            showDashboard() {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('server-management').style.display = 'none';
+                document.getElementById('user-info').style.display = 'flex';
                 
-                document.getElementById('discord-login').href = 
-                    `https://discord.com/oauth2/authorize?${params}`;
-            }
+                this.updateStats();
+                this.loadGuilds();
+            },
 
-            async checkAuth() {
-                const userData = localStorage.getItem('discord_user');
-                const guildsData = localStorage.getItem('discord_guilds');
+            showServerManagement(guild) {
+                this.currentGuild = guild;
+                document.getElementById('server-name').textContent = `Управление: ${guild.name}`;
+                document.getElementById('current-server-name').textContent = guild.name;
                 
-                if (userData && guildsData) {
-                    this.currentUser = JSON.parse(userData);
-                    this.userGuilds = JSON.parse(guildsData);
-                    await this.filterAvailableGuilds();
-                    this.showDashboard();
-                    this.updateUserInfo();
-                } else {
-                    this.showAuth();
-                }
-            }
-
-            async filterAvailableGuilds() {
-                // Фильтруем серверы где пользователь администратор
-                const adminGuilds = this.userGuilds.filter(guild => 
-                    (guild.permissions & 0x8) === 0x8 // ADMINISTRATOR permission
-                );
-
-                // В реальном приложении здесь бы проверялось наличие бота на сервере
-                // Для демо используем mock данные
-                this.availableGuilds = adminGuilds.map(guild => ({
-                    ...guild,
-                    bot_online: true,
-                    bot_permissions: 0x8,
-                    features: ['welcome', 'moderation', 'autorole']
-                }));
-
-                // Сохраняем ID серверов с ботом для конфигурации
-                CONFIG.botGuilds = this.availableGuilds.map(g => g.id);
-            }
-
-            async handleOAuthCallback() {
-                const hash = window.location.hash.substring(1);
-                const params = new URLSearchParams(hash);
-                const accessToken = params.get('access_token');
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('server-management').style.display = 'block';
                 
-                if (accessToken) {
-                    try {
-                        await this.loadUserData(accessToken);
-                        // Очищаем URL
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    } catch (error) {
-                        console.error('OAuth callback failed:', error);
-                        this.showNotification('Ошибка авторизации', 'error');
-                    }
-                }
-            }
+                this.loadServerData(guild);
+            },
 
-            async loadUserData(accessToken) {
-                try {
-                    // Загружаем данные пользователя
-                    const userResponse = await fetch('https://discord.com/api/users/@me', {
-                        headers: { 'Authorization': `Bearer ${accessToken}` }
-                    });
-                    const user = await userResponse.json();
-                    
-                    // Загружаем серверы пользователя
-                    const guildsResponse = await fetch('https://discord.com/api/users/@me/guilds', {
-                        headers: { 'Authorization': `Bearer ${accessToken}` }
-                    });
-                    const guilds = await guildsResponse.json();
-                    
-                    // Сохраняем данные
-                    localStorage.setItem('discord_user', JSON.stringify(user));
-                    localStorage.setItem('discord_guilds', JSON.stringify(guilds));
-                    
-                    this.currentUser = user;
-                    this.userGuilds = guilds;
-                    
-                    await this.filterAvailableGuilds();
-                    this.showDashboard();
-                    this.updateUserInfo();
-                    
-                    this.showNotification('Успешная авторизация!', 'success');
-                    
-                } catch (error) {
-                    console.error('Failed to load user data:', error);
-                    this.showNotification('Ошибка загрузки данных', 'error');
+            updateUserInfo() {
+                if (this.currentUser) {
+                    document.getElementById('user-name').textContent = 
+                        `${this.currentUser.username}#${this.currentUser.discriminator}`;
+                    document.getElementById('user-avatar').src = 
+                        this.currentUser.avatar ? 
+                        `https://cdn.discordapp.com/avatars/${this.currentUser.id}/${this.currentUser.avatar}.png` :
+                        `https://cdn.discordapp.com/embed/avatars/${this.currentUser.discriminator % 5}.png`;
                 }
-            }
+            },
 
             loadGuilds() {
                 const grid = document.getElementById('servers-grid');
-                
-                if (this.availableGuilds.length === 0) {
-                    grid.innerHTML = `
-                        <div style="text-align: center; padding: 40px; grid-column: 1 / -1;">
-                            <i class="fas fa-robot" style="font-size: 3rem; color: var(--text-gray); margin-bottom: 20px;"></i>
-                            <h3>Нет доступных серверов</h3>
-                            <p>Бот не добавлен на серверы где вы администратор, или у вас нет прав администратора</p>
-                            <div style="margin-top: 20px;">
-                                <button class="btn btn-primary" onclick="window.open('https://discord.com/oauth2/authorize?client_id=${CONFIG.clientId}&scope=bot&permissions=8', '_blank')">
-                                    <i class="fas fa-plus"></i> Добавить бота на сервер
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-
                 grid.innerHTML = '';
 
-                this.availableGuilds.forEach(guild => {
-                    const card = document.createElement('div');
+                this.userGuilds.forEach(guild => {
+                    const card = document.createElement('a');
                     card.className = 'server-card';
-                    
-                    const iconUrl = guild.icon 
-                        ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                        : null;
-                    
+                    card.href = `/server/${guild.id}`;
                     card.innerHTML = `
-                        ${iconUrl ? 
-                            `<img src="${iconUrl}" class="server-icon" alt="${guild.name}">` :
-                            `<div style="font-size: 2rem; margin-bottom: 10px;">🏠</div>`
-                        }
+                        <div style="font-size: 2rem; margin-bottom: 10px;">${guild.icon}</div>
                         <h3>${guild.name}</h3>
-                        <p>👥 Участников: ${guild.approximate_member_count?.toLocaleString() || 'N/A'}</p>
-                        <p>
-                            <span class="permission-badge">Бот онлайн</span>
-                            <span class="permission-badge">Администратор</span>
-                        </p>
-                        <div class="server-actions">
-                            <button class="btn btn-primary" onclick="dashboard.manageServer('${guild.id}')">
-                                <i class="fas fa-cog"></i> Управлять
-                            </button>
+                        <p>👥 Участников: ${guild.approximate_member_count || 'N/A'}</p>
+                        <div style="margin-top: 15px; color: var(--accent-blue);">
+                            <i class="fas fa-cog"></i> Управлять
                         </div>
                     `;
+                    
+                    card.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        Router.navigate(`/server/${guild.id}`);
+                    });
                     
                     grid.appendChild(card);
                 });
-
-                this.updateStats();
-            }
+            },
 
             manageServer(guildId) {
-                const guild = this.availableGuilds.find(g => g.id === guildId);
+                const guild = this.userGuilds.find(g => g.id === guildId);
                 if (guild) {
-                    this.currentGuild = guild;
-                    document.getElementById('server-name').textContent = `Управление: ${guild.name}`;
-                    this.showServerManagement();
-                    this.loadServerData(guild);
+                    this.showServerManagement(guild);
+                } else {
+                    Router.navigate('/dashboard');
                 }
-            }
+            },
 
             loadServerData(guild) {
-                // Загружаем текущие настройки из localStorage
-                const settings = this.getServerSettings(guild.id);
-                
-                // Заполняем формы
-                this.fillSettingsForm(settings);
-                
-                // Создаем mock данные каналов и ролей
-                this.createMockServerData(guild);
-            }
-
-            createMockServerData(guild) {
-                // Mock каналы
-                const mockChannels = [
-                    { id: '1', name: 'общий', type: 0 },
-                    { id: '2', name: 'приветствия', type: 0 },
-                    { id: '3', name: 'логи', type: 0 },
-                    { id: '4', name: 'команды', type: 0 }
-                ];
-                
-                // Mock роли
-                const mockRoles = [
-                    { id: '1', name: 'Участник' },
-                    { id: '2', name: 'Модератор' },
-                    { id: '3', name: 'Администратор' },
-                    { id: '4', name: 'VIP' }
-                ];
-
-                this.fillChannelSelect('welcome-channel', mockChannels);
-                this.fillChannelSelect('farewell-channel', mockChannels);
-                this.fillChannelSelect('modlog-channel', mockChannels);
-                this.fillChannelSelect('logs-channel', mockChannels);
-                this.fillRoleSelect('autorole-role', mockRoles);
-            }
+                this.fillChannelSelect('welcome-channel', guild.channels);
+                this.fillChannelSelect('farewell-channel', guild.channels);
+                this.fillChannelSelect('modlog-channel', guild.channels);
+                this.fillRoleSelect('autorole-role', guild.roles);
+                this.loadCurrentSettings(guild.id);
+            },
 
             fillChannelSelect(selectId, channels) {
                 const select = document.getElementById(selectId);
                 select.innerHTML = '<option value="">Выберите канал</option>';
                 
-                channels.forEach(channel => {
-                    const option = document.createElement('option');
-                    option.value = channel.id;
-                    option.textContent = `#${channel.name}`;
-                    select.appendChild(option);
-                });
-            }
+                if (channels) {
+                    channels.forEach(channel => {
+                        if (channel.type === 0) {
+                            const option = document.createElement('option');
+                            option.value = channel.id;
+                            option.textContent = `#${channel.name}`;
+                            select.appendChild(option);
+                        }
+                    });
+                }
+            },
 
             fillRoleSelect(selectId, roles) {
                 const select = document.getElementById(selectId);
                 select.innerHTML = '<option value="">Выберите роль</option>';
                 
-                roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.id;
-                    option.textContent = role.name;
-                    select.appendChild(option);
-                });
-            }
+                if (roles) {
+                    roles.forEach(role => {
+                        if (role.name !== '@everyone') {
+                            const option = document.createElement('option');
+                            option.value = role.id;
+                            option.textContent = role.name;
+                            select.appendChild(option);
+                        }
+                    });
+                }
+            },
 
-            fillSettingsForm(settings) {
-                // Приветствие
+            loadCurrentSettings(guildId) {
+                const settings = BotData.getSettings(guildId);
+                
                 if (settings.welcome) {
                     document.getElementById('welcome-enabled').checked = settings.welcome.enabled || false;
                     document.getElementById('welcome-channel').value = settings.welcome.channel_id || '';
-                    document.getElementById('welcome-message').value = settings.welcome.message || '';
+                    if (settings.welcome.message) {
+                        document.getElementById('welcome-json').value = JSON.stringify(settings.welcome.message, null, 2);
+                    }
                 }
 
-                // Прощание
                 if (settings.farewell) {
                     document.getElementById('farewell-enabled').checked = settings.farewell.enabled || false;
                     document.getElementById('farewell-channel').value = settings.farewell.channel_id || '';
-                    document.getElementById('farewell-message').value = settings.farewell.message || '';
+                    if (settings.farewell.message) {
+                        document.getElementById('farewell-json').value = JSON.stringify(settings.farewell.message, null, 2);
+                    }
                 }
 
-                // Автороль
                 if (settings.autorole) {
                     document.getElementById('autorole-enabled').checked = settings.autorole.enabled || false;
                     document.getElementById('autorole-role').value = settings.autorole.role_id || '';
                     document.getElementById('autorole-delay').value = settings.autorole.delay || 0;
                 }
 
-                // Модерация
                 if (settings.moderation) {
                     document.getElementById('automod-enabled').checked = settings.moderation.enabled || false;
                     document.getElementById('modlog-channel').value = settings.moderation.log_channel || '';
@@ -1014,96 +1083,13 @@
                     document.getElementById('filter-words').checked = settings.moderation.filter_words || false;
                 }
 
-                // Логи
-                if (settings.logs) {
-                    document.getElementById('logs-enabled').checked = settings.logs.enabled || false;
-                    document.getElementById('logs-channel').value = settings.logs.channel_id || '';
-                    document.getElementById('log-joins').checked = settings.logs.log_joins || false;
-                    document.getElementById('log-messages').checked = settings.logs.log_messages || false;
-                    document.getElementById('log-moderation').checked = settings.logs.log_moderation || false;
-                    document.getElementById('log-voice').checked = settings.logs.log_voice || false;
-                }
-
-                // Обновляем статусы toggle switches
                 document.querySelectorAll('.toggle-switch input').forEach(toggle => {
                     toggle.dispatchEvent(new Event('change'));
                 });
-            }
 
-            getServerSettings(guildId) {
-                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
-                return allSettings[guildId] || {};
-            }
-
-            saveServerSettings(guildId, settings) {
-                const allSettings = JSON.parse(localStorage.getItem('bot_settings') || '{}');
-                allSettings[guildId] = { ...allSettings[guildId], ...settings };
-                localStorage.setItem('bot_settings', JSON.stringify(allSettings));
-            }
-
-            updateStats() {
-                document.getElementById('servers-count').textContent = this.availableGuilds.length;
-                
-                const totalMembers = this.availableGuilds.reduce((sum, guild) => 
-                    sum + (guild.approximate_member_count || 0), 0
-                );
-                document.getElementById('total-members').textContent = totalMembers.toLocaleString();
-                
-                // Считаем активные функции
-                let activeFeatures = 0;
-                this.availableGuilds.forEach(guild => {
-                    const settings = this.getServerSettings(guild.id);
-                    if (settings.welcome?.enabled) activeFeatures++;
-                    if (settings.farewell?.enabled) activeFeatures++;
-                    if (settings.autorole?.enabled) activeFeatures++;
-                    if (settings.moderation?.enabled) activeFeatures++;
-                    if (settings.logs?.enabled) activeFeatures++;
-                });
-                document.getElementById('active-features').textContent = activeFeatures;
-            }
-
-            showAuth() {
-                document.getElementById('auth-section').style.display = 'block';
-                document.getElementById('dashboard-section').style.display = 'none';
-                document.getElementById('server-management').style.display = 'none';
-                document.getElementById('user-info').style.display = 'none';
-            }
-
-            showDashboard() {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
-                document.getElementById('server-management').style.display = 'none';
-                document.getElementById('user-info').style.display = 'flex';
-                this.loadGuilds();
-            }
-
-            showServerManagement() {
-                document.getElementById('dashboard-section').style.display = 'none';
-                document.getElementById('server-management').style.display = 'block';
-            }
-
-            updateUserInfo() {
-                if (this.currentUser) {
-                    document.getElementById('user-name').textContent = 
-                        `${this.currentUser.username}#${this.currentUser.discriminator}`;
-                    
-                    const avatarUrl = this.currentUser.avatar 
-                        ? `https://cdn.discordapp.com/avatars/${this.currentUser.id}/${this.currentUser.avatar}.png`
-                        : `https://cdn.discordapp.com/embed/avatars/${this.currentUser.discriminator % 5}.png`;
-                    
-                    document.getElementById('user-avatar').src = avatarUrl;
-                }
-            }
-
-            logout() {
-                localStorage.removeItem('discord_user');
-                localStorage.removeItem('discord_guilds');
-                this.currentUser = null;
-                this.userGuilds = [];
-                this.availableGuilds = [];
-                this.showAuth();
-                this.showNotification('Вы вышли из системы', 'success');
-            }
+                this.updatePreview('welcome');
+                this.updatePreview('farewell');
+            },
 
             switchTab(tabName) {
                 document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -1111,7 +1097,56 @@
                 
                 document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
-            }
+            },
+
+            updatePreview(type) {
+                const jsonTextarea = document.getElementById(`${type}-json`);
+                const previewContent = document.getElementById(`${type}-preview-content`);
+                
+                try {
+                    const jsonData = JSON.parse(jsonTextarea.value);
+                    previewContent.innerHTML = `
+                        <div style="color: var(--success); margin-bottom: 10px;">
+                            <i class="fas fa-check-circle"></i> JSON валиден
+                        </div>
+                        <div style="background: var(--secondary-dark); padding: 15px; border-radius: 5px;">
+                            <strong>Контент:</strong> ${jsonData.content || 'Не указан'}<br>
+                            <strong>Эмбедов:</strong> ${jsonData.embeds ? jsonData.embeds.length : 0}
+                        </div>
+                    `;
+                } catch (error) {
+                    previewContent.innerHTML = `
+                        <div style="color: var(--error);">
+                            <i class="fas fa-exclamation-circle"></i> Ошибка в JSON: ${error.message}
+                        </div>
+                    `;
+                }
+            },
+
+            updateStats() {
+                document.getElementById('servers-count').textContent = this.userGuilds.length;
+                document.getElementById('total-members').textContent = this.userGuilds.reduce((sum, guild) => 
+                    sum + (guild.approximate_member_count || 0), 0
+                );
+                
+                let activeFeatures = 0;
+                this.userGuilds.forEach(guild => {
+                    const settings = BotData.getSettings(guild.id);
+                    if (settings.welcome?.enabled) activeFeatures++;
+                    if (settings.farewell?.enabled) activeFeatures++;
+                    if (settings.autorole?.enabled) activeFeatures++;
+                    if (settings.moderation?.enabled) activeFeatures++;
+                });
+                document.getElementById('active-features').textContent = activeFeatures;
+            },
+
+            logout() {
+                localStorage.removeItem('demoMode');
+                this.currentUser = null;
+                this.userGuilds = [];
+                Router.navigate('/login');
+                this.showNotification('Вы вышли из системы', 'success');
+            },
 
             showNotification(message, type = 'success') {
                 const notification = document.getElementById('notification');
@@ -1122,11 +1157,11 @@
                     notification.classList.remove('show');
                 }, 3000);
             }
-        }
+        };
 
-        // Глобальные функции для кнопок
+        // Глобальные функции
         function saveSettings(type) {
-            if (!dashboard.currentGuild) return;
+            if (!App.currentGuild) return;
 
             const settings = {};
 
@@ -1136,14 +1171,14 @@
                         settings.welcome = {
                             enabled: document.getElementById('welcome-enabled').checked,
                             channel_id: document.getElementById('welcome-channel').value,
-                            message: document.getElementById('welcome-message').value
+                            message: JSON.parse(document.getElementById('welcome-json').value)
                         };
                         break;
                     case 'farewell':
                         settings.farewell = {
                             enabled: document.getElementById('farewell-enabled').checked,
                             channel_id: document.getElementById('farewell-channel').value,
-                            message: document.getElementById('farewell-message').value
+                            message: JSON.parse(document.getElementById('farewell-json').value)
                         };
                         break;
                     case 'autorole':
@@ -1163,39 +1198,20 @@
                             filter_words: document.getElementById('filter-words').checked
                         };
                         break;
-                    case 'logs':
-                        settings.logs = {
-                            enabled: document.getElementById('logs-enabled').checked,
-                            channel_id: document.getElementById('logs-channel').value,
-                            log_joins: document.getElementById('log-joins').checked,
-                            log_messages: document.getElementById('log-messages').checked,
-                            log_moderation: document.getElementById('log-moderation').checked,
-                            log_voice: document.getElementById('log-voice').checked
-                        };
-                        break;
                 }
 
-                dashboard.saveServerSettings(dashboard.currentGuild.id, settings);
-                dashboard.showNotification('Настройки сохранены успешно!', 'success');
-                dashboard.updateStats();
-                
+                BotData.saveSettings(App.currentGuild.id, settings);
+                App.showNotification('Настройки сохранены успешно!', 'success');
+                App.updateStats();
             } catch (error) {
                 console.error('Save failed:', error);
-                dashboard.showNotification('Ошибка при сохранении настроек', 'error');
+                App.showNotification('Ошибка при сохранении настроек', 'error');
             }
         }
 
-        function testFeature(type) {
-            dashboard.showNotification(`Функция "${type}" протестирована!`, 'success');
-        }
-
-        // Инициализация приложения
-        const dashboard = new BotDashboard();
-
-        // Обработка OAuth callback при загрузке
-        window.addEventListener('load', () => {
-            dashboard.handleOAuthCallback();
-        });
+        // Инициализация
+        const app = App;
+        document.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
 </html>
