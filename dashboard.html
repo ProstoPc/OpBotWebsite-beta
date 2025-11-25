@@ -440,6 +440,13 @@
                 <button class="discord-login-btn" id="discord-login">
                     <i class="fab fa-discord"></i> Войти через Discord
                 </button>
+                <div style="margin-top: 30px; padding: 20px; background: var(--primary-dark); border-radius: 8px;">
+                    <h4>Демо-режим</h4>
+                    <p style="margin: 10px 0; color: var(--text-gray);">Для тестирования используйте демо-аккаунт</p>
+                    <button class="btn btn-primary" id="demo-login">
+                        <i class="fas fa-play"></i> Войти в демо-режим
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -448,7 +455,7 @@
     <section class="dashboard-section" id="dashboard-section">
         <div class="container">
             <div class="breadcrumb">
-                <a href="/">Главная</a> / Панель управления
+                <a href="#" onclick="Router.navigate('/')">Главная</a> / Панель управления
             </div>
             
             <h1>Панель управления</h1>
@@ -488,16 +495,16 @@
     <section class="server-management" id="server-management">
         <div class="container">
             <div class="breadcrumb">
-                <a href="/">Главная</a> / 
-                <a href="/dashboard">Панель управления</a> / 
+                <a href="#" onclick="Router.navigate('/')">Главная</a> / 
+                <a href="#" onclick="Router.navigate('/dashboard')">Панель управления</a> / 
                 <span id="current-server-name">Сервер</span>
             </div>
 
             <div class="management-header">
                 <h1 id="server-name">Управление сервером</h1>
-                <a href="/dashboard" class="btn btn-secondary" id="back-btn">
+                <button class="btn btn-secondary" onclick="Router.navigate('/dashboard')">
                     <i class="fas fa-arrow-left"></i> Назад к серверам
-                </a>
+                </button>
             </div>
 
             <div class="management-tabs">
@@ -616,7 +623,7 @@
     </section>
 
     <script>
-        // Маршрутизация
+        // Улучшенная маршрутизация для SPA
         const Router = {
             routes: {
                 '/': 'login',
@@ -626,15 +633,26 @@
             },
 
             init() {
+                // Обработка навигации
                 window.addEventListener('popstate', () => this.route());
+                
+                // Обработка кликов по ссылкам
+                document.addEventListener('click', (e) => {
+                    if (e.target.matches('[data-link]')) {
+                        e.preventDefault();
+                        this.navigate(e.target.href);
+                    }
+                });
+
                 this.route();
             },
 
             route() {
                 const path = window.location.pathname;
+                console.log('Routing to:', path);
                 
                 // Обработка маршрута сервера
-                const serverMatch = path.match(/^\/server\/([a-zA-Z0-9]+)$/);
+                const serverMatch = path.match(/^\/server\/([a-zA-Z0-9_-]+)$/);
                 if (serverMatch) {
                     const serverId = serverMatch[1];
                     this.showServerPage(serverId);
@@ -645,30 +663,36 @@
                 switch(path) {
                     case '/':
                     case '/login':
+                    case '/index.html':
                         this.showLoginPage();
                         break;
                     case '/dashboard':
                         this.showDashboardPage();
                         break;
                     default:
+                        // Если маршрут не найден, показываем главную
                         this.showLoginPage();
                 }
             },
 
             navigate(path) {
+                // Если путь полный URL, извлекаем только pathname
+                if (path.startsWith('http')) {
+                    const url = new URL(path);
+                    path = url.pathname + url.search;
+                }
+                
                 window.history.pushState({}, '', path);
                 this.route();
             },
 
             showLoginPage() {
-                if (App.currentUser) {
-                    this.navigate('/dashboard');
-                    return;
-                }
+                console.log('Showing login page');
                 App.showAuth();
             },
 
             showDashboardPage() {
+                console.log('Showing dashboard page');
                 if (!App.currentUser) {
                     this.navigate('/login');
                     return;
@@ -677,6 +701,7 @@
             },
 
             showServerPage(serverId) {
+                console.log('Showing server page for:', serverId);
                 if (!App.currentUser) {
                     this.navigate('/login');
                     return;
@@ -734,9 +759,12 @@
                     this.sentMessages = parseInt(sentMessages);
                 }
 
-                // Автоматический вход для демо
-                App.currentUser = this.demoUser;
-                App.userGuilds = this.demoGuilds;
+                // Проверяем демо-режим
+                const isDemo = localStorage.getItem('demoMode') === 'true';
+                if (isDemo) {
+                    App.currentUser = this.demoUser;
+                    App.userGuilds = this.demoGuilds;
+                }
             },
 
             saveSettings(guildId, settings) {
@@ -771,8 +799,9 @@
             },
 
             setupEventListeners() {
-                document.getElementById('discord-login').addEventListener('click', () => this.login());
+                document.getElementById('demo-login').addEventListener('click', () => this.demoLogin());
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+                document.getElementById('discord-login').addEventListener('click', () => this.demoLogin());
 
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.addEventListener('click', () => {
@@ -787,24 +816,25 @@
                 });
             },
 
-            login() {
+            demoLogin() {
+                localStorage.setItem('demoMode', 'true');
+                this.currentUser = BotData.demoUser;
+                this.userGuilds = BotData.demoGuilds;
                 Router.navigate('/dashboard');
                 this.updateUserInfo();
                 this.loadGuilds();
-                this.showNotification('Успешный вход в систему!', 'success');
+                this.showNotification('Демо-режим активирован!', 'success');
             },
 
             showAuth() {
+                this.hideAllSections();
                 document.getElementById('auth-section').style.display = 'block';
-                document.getElementById('dashboard-section').style.display = 'none';
-                document.getElementById('server-management').style.display = 'none';
                 document.getElementById('user-info').style.display = 'none';
             },
 
             showDashboard() {
-                document.getElementById('auth-section').style.display = 'none';
+                this.hideAllSections();
                 document.getElementById('dashboard-section').style.display = 'block';
-                document.getElementById('server-management').style.display = 'none';
                 document.getElementById('user-info').style.display = 'flex';
                 
                 this.updateStats();
@@ -812,15 +842,20 @@
             },
 
             showServerManagement(guild) {
+                this.hideAllSections();
                 this.currentGuild = guild;
                 document.getElementById('server-name').textContent = `Управление: ${guild.name}`;
                 document.getElementById('current-server-name').textContent = guild.name;
-                
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'none';
                 document.getElementById('server-management').style.display = 'block';
+                document.getElementById('user-info').style.display = 'flex';
                 
                 this.loadServerData(guild);
+            },
+
+            hideAllSections() {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('server-management').style.display = 'none';
             },
 
             updateUserInfo() {
@@ -839,9 +874,8 @@
                 grid.innerHTML = '';
 
                 this.userGuilds.forEach(guild => {
-                    const card = document.createElement('a');
+                    const card = document.createElement('div');
                     card.className = 'server-card';
-                    card.href = `/server/${guild.id}`;
                     card.innerHTML = `
                         <div style="font-size: 2rem; margin-bottom: 10px;">${guild.icon}</div>
                         <h3>${guild.name}</h3>
@@ -851,8 +885,7 @@
                         </div>
                     `;
                     
-                    card.addEventListener('click', (e) => {
-                        e.preventDefault();
+                    card.addEventListener('click', () => {
                         Router.navigate(`/server/${guild.id}`);
                     });
                     
@@ -866,6 +899,7 @@
                     this.showServerManagement(guild);
                 } else {
                     Router.navigate('/dashboard');
+                    this.showNotification('Сервер не найден', 'error');
                 }
             },
 
@@ -938,9 +972,10 @@
             },
 
             logout() {
+                localStorage.removeItem('demoMode');
                 this.currentUser = null;
                 this.userGuilds = [];
-                Router.navigate('/login');
+                Router.navigate('/');
                 this.showNotification('Вы вышли из системы', 'success');
             },
 
