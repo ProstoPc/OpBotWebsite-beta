@@ -321,49 +321,34 @@
             font-size: 14px;
         }
 
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
+        .message-input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+        .test-result {
+            background-color: var(--primary-dark);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
+        .test-success {
+            border-left: 4px solid var(--success);
         }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--accent-blue);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
+        .test-error {
+            border-left: 4px solid var(--error);
         }
 
         .notification {
@@ -450,18 +435,11 @@
             <div class="auth-container">
                 <h1>Добро пожаловать в OpBot</h1>
                 <p style="margin: 20px 0; color: var(--text-gray);">
-                    Мощный Discord бот с расширенными возможностями модерации и управления
+                    Мощный Discord бот с тестированием отправки сообщений
                 </p>
                 <button class="discord-login-btn" id="discord-login">
                     <i class="fab fa-discord"></i> Войти через Discord
                 </button>
-                <div style="margin-top: 30px; padding: 20px; background: var(--primary-dark); border-radius: 8px;">
-                    <h4>Демо-режим</h4>
-                    <p style="margin: 10px 0; color: var(--text-gray);">Для тестирования используйте демо-аккаунт</p>
-                    <button class="btn btn-primary" id="demo-login">
-                        <i class="fas fa-play"></i> Войти в демо-режим
-                    </button>
-                </div>
             </div>
         </div>
     </section>
@@ -488,9 +466,9 @@
                     <div>Всего участников</div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-cogs"></i>
-                    <div class="stat-number" id="active-features">0</div>
-                    <div>Активных функций</div>
+                    <i class="fas fa-paper-plane"></i>
+                    <div class="stat-number" id="sent-messages">0</div>
+                    <div>Отправлено сообщений</div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-bolt"></i>
@@ -523,222 +501,113 @@
             </div>
 
             <div class="management-tabs">
-                <div class="tab active" data-tab="welcome">Приветствие</div>
-                <div class="tab" data-tab="farewell">Прощание</div>
-                <div class="tab" data-tab="autorole">Автороль</div>
-                <div class="tab" data-tab="moderation">Модерация</div>
+                <div class="tab active" data-tab="test-send">Тест отправки</div>
+                <div class="tab" data-tab="settings">Настройки</div>
             </div>
 
-            <!-- Welcome Settings -->
-            <div class="tab-content active" id="welcome-tab">
+            <!-- Test Send Settings -->
+            <div class="tab-content active" id="test-send-tab">
                 <div class="setting-group">
-                    <h3><i class="fas fa-door-open"></i> Настройка приветственного сообщения</h3>
+                    <h3><i class="fas fa-paper-plane"></i> Тестирование отправки сообщений</h3>
                     
                     <div class="setting-item">
-                        <label class="setting-label">Статус функции:</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="welcome-enabled">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="welcome-status-text" style="margin-left: 10px;">Выключено</span>
-                    </div>
-
-                    <div class="setting-item">
-                        <label class="setting-label">Канал для приветствий:</label>
-                        <select class="channel-select" id="welcome-channel">
+                        <label class="setting-label">Выберите канал для отправки:</label>
+                        <select class="channel-select" id="test-channel">
                             <option value="">Выберите канал</option>
                         </select>
                     </div>
-                    
+
                     <div class="setting-item">
-                        <label class="setting-label">JSON редактор сообщения:</label>
-                        <textarea class="json-editor" id="welcome-json" placeholder="Введите JSON структуру сообщения...">
+                        <label class="setting-label">Тип сообщения:</label>
+                        <select class="channel-select" id="message-type">
+                            <option value="text">Текстовое сообщение</option>
+                            <option value="embed">Embed сообщение</option>
+                            <option value="json">JSON сообщение</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item" id="text-message-section">
+                        <label class="setting-label">Текст сообщения:</label>
+                        <textarea class="message-input" id="text-message" placeholder="Введите текст сообщения..."></textarea>
+                    </div>
+
+                    <div class="setting-item" id="embed-message-section" style="display: none;">
+                        <label class="setting-label">Настройки Embed:</label>
+                        
+                        <input type="text" class="channel-select" id="embed-title" placeholder="Заголовок embed">
+                        <textarea class="message-input" id="embed-description" placeholder="Описание embed" style="min-height: 80px;"></textarea>
+                        <input type="color" id="embed-color" value="#00a8ff" style="margin-bottom: 15px;">
+                        <label style="color: var(--text-gray); font-size: 12px;">Цвет embed</label>
+                    </div>
+
+                    <div class="setting-item" id="json-message-section" style="display: none;">
+                        <label class="setting-label">JSON сообщение:</label>
+                        <textarea class="json-editor" id="json-message" placeholder="Введите JSON структуру сообщения...">
 {
-  "content": "Добро пожаловать, {user}!",
+  "content": "Тестовое сообщение",
   "embeds": [
     {
-      "title": "🎉 Добро пожаловать!",
-      "description": "Рады видеть тебя на нашем сервере, {user}!",
+      "title": "Тестовый Embed",
+      "description": "Это тестовое сообщение отправленное через панель управления",
       "color": 3447003,
-      "thumbnail": {
-        "url": "{user_avatar}"
-      },
-      "fields": [
-        {
-          "name": "👥 Участник",
-          "value": "{user} (№{member_count})",
-          "inline": true
-        },
-        {
-          "name": "📅 Присоединился",
-          "value": "{join_time}",
-          "inline": true
-        }
-      ],
-      "timestamp": "{join_time}",
-      "footer": {
-        "text": "Приятного общения!"
-      }
+      "timestamp": "2024-01-01T00:00:00.000Z"
     }
   ]
 }</textarea>
                     </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Количество сообщений:</label>
+                        <input type="number" id="message-count" class="channel-select" value="1" min="1" max="10">
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Задержка между сообщениями (мс):</label>
+                        <input type="number" id="message-delay" class="channel-select" value="1000" min="0" max="10000">
+                    </div>
+
+                    <button class="btn btn-success" onclick="sendTestMessage()">
+                        <i class="fas fa-paper-plane"></i> Отправить тестовое сообщение
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearTestResults()">
+                        <i class="fas fa-trash"></i> Очистить результаты
+                    </button>
                     
-                    <div class="preview-area" id="welcome-preview">
-                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
-                        <div id="welcome-preview-content" style="margin-top: 10px; color: var(--text-gray);">
-                            Предпросмотр будет отображен здесь после ввода валидного JSON
+                    <div class="test-result" id="test-result">
+                        <h4><i class="fas fa-list"></i> Результаты тестирования:</h4>
+                        <div id="test-result-content" style="margin-top: 10px; color: var(--text-gray);">
+                            Здесь будут отображаться результаты отправки сообщений
                         </div>
                     </div>
-                    
-                    <button class="btn btn-success" onclick="saveSettings('welcome')">
-                        <i class="fas fa-save"></i> Сохранить настройки
-                    </button>
                 </div>
             </div>
 
-            <!-- Farewell Settings -->
-            <div class="tab-content" id="farewell-tab">
+            <!-- Settings -->
+            <div class="tab-content" id="settings-tab">
                 <div class="setting-group">
-                    <h3><i class="fas fa-door-closed"></i> Настройка сообщения прощания</h3>
+                    <h3><i class="fas fa-cog"></i> Настройки бота</h3>
                     
                     <div class="setting-item">
-                        <label class="setting-label">Статус функции:</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="farewell-enabled">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="farewell-status-text" style="margin-left: 10px;">Выключено</span>
+                        <label class="setting-label">Префикс команд:</label>
+                        <input type="text" id="command-prefix" class="channel-select" value="!" maxlength="5">
                     </div>
 
                     <div class="setting-item">
-                        <label class="setting-label">Канал для прощаний:</label>
-                        <select class="channel-select" id="farewell-channel">
-                            <option value="">Выберите канал</option>
-                        </select>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label class="setting-label">JSON редактор сообщения:</label>
-                        <textarea class="json-editor" id="farewell-json" placeholder="Введите JSON структуру сообщения...">
-{
-  "content": "Пока, {user}!",
-  "embeds": [
-    {
-      "title": "👋 Прощание",
-      "description": "{user} покинул нас :(",
-      "color": 15158332,
-      "thumbnail": {
-        "url": "{user_avatar}"
-      },
-      "fields": [
-        {
-          "name": "📊 Всего участников",
-          "value": "{member_count}",
-          "inline": true
-        }
-      ],
-      "timestamp": "{leave_time}",
-      "footer": {
-        "text": "Надеемся увидеть снова!"
-      }
-    }
-  ]
-}</textarea>
-                    </div>
-                    
-                    <div class="preview-area" id="farewell-preview">
-                        <h4><i class="fas fa-eye"></i> Предпросмотр:</h4>
-                        <div id="farewell-preview-content" style="margin-top: 10px; color: var(--text-gray);">
-                            Предпросмотр будет отображен здесь после ввода валидного JSON
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="saveSettings('farewell')">
-                        <i class="fas fa-save"></i> Сохранить настройки
-                    </button>
-                </div>
-            </div>
-
-            <!-- Autorole Settings -->
-            <div class="tab-content" id="autorole-tab">
-                <div class="setting-group">
-                    <h3><i class="fas fa-user-plus"></i> Настройка автороли</h3>
-                    
-                    <div class="setting-item">
-                        <label class="setting-label">Статус функции:</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="autorole-enabled">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="autorole-status-text" style="margin-left: 10px;">Выключено</span>
-                    </div>
-
-                    <div class="setting-item">
-                        <label class="setting-label">Роль для выдачи:</label>
-                        <select class="role-select" id="autorole-role">
-                            <option value="">Выберите роль</option>
+                        <label class="setting-label">Язык бота:</label>
+                        <select class="channel-select" id="bot-language">
+                            <option value="ru">Русский</option>
+                            <option value="en">English</option>
                         </select>
                     </div>
 
                     <div class="setting-item">
-                        <label class="setting-label">Задержка выдачи (секунды):</label>
-                        <input type="number" id="autorole-delay" class="channel-select" value="0" min="0" max="300">
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="saveSettings('autorole')">
-                        <i class="fas fa-save"></i> Сохранить настройки
-                    </button>
-                </div>
-            </div>
-
-            <!-- Moderation Settings -->
-            <div class="tab-content" id="moderation-tab">
-                <div class="setting-group">
-                    <h3><i class="fas fa-shield-alt"></i> Настройки модерации</h3>
-                    
-                    <div class="setting-item">
-                        <label class="setting-label">Автоматическая модерация:</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="automod-enabled">
-                            <span class="slider"></span>
-                        </label>
-                        <span id="automod-status-text" style="margin-left: 10px;">Выключено</span>
-                    </div>
-
-                    <div class="setting-item">
-                        <label class="setting-label">Канал для логов модерации:</label>
-                        <select class="channel-select" id="modlog-channel">
+                        <label class="setting-label">Канал для логов:</label>
+                        <select class="channel-select" id="log-channel">
                             <option value="">Выберите канал</option>
                         </select>
                     </div>
 
-                    <div class="setting-item">
-                        <label class="setting-label">Максимальное количество предупреждений:</label>
-                        <input type="number" id="max-warnings" class="channel-select" value="3" min="1" max="10">
-                    </div>
-
-                    <h4 style="margin-top: 20px;">Фильтры контента:</h4>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="filter-links">
-                            Блокировать ссылки
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="filter-invites">
-                            Блокировать приглашения
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="filter-words">
-                            Фильтр плохих слов
-                        </label>
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="saveSettings('moderation')">
+                    <button class="btn btn-success" onclick="saveBotSettings()">
                         <i class="fas fa-save"></i> Сохранить настройки
                     </button>
                 </div>
@@ -820,7 +689,7 @@
         const BotData = {
             demoUser: {
                 id: 'demo123',
-                username: 'DemoUser',
+                username: 'TestUser',
                 discriminator: '0001',
                 avatar: null
             },
@@ -828,39 +697,31 @@
             demoGuilds: [
                 {
                     id: 'guild1',
-                    name: 'Игровое сообщество',
+                    name: 'Тестовый сервер 1',
                     icon: '🎮',
                     approximate_member_count: 1500,
                     permissions: '0x20',
                     channels: [
-                        { id: 'ch1', name: 'общее', type: 0 },
-                        { id: 'ch2', name: 'приветствия', type: 0 },
+                        { id: 'ch1', name: 'общий-чат', type: 0 },
+                        { id: 'ch2', name: 'тестирование', type: 0 },
                         { id: 'ch3', name: 'логи', type: 0 }
-                    ],
-                    roles: [
-                        { id: 'role1', name: 'Участник' },
-                        { id: 'role2', name: 'Модератор' },
-                        { id: 'role3', name: 'VIP' }
                     ]
                 },
                 {
                     id: 'guild2',
-                    name: 'Разработчики',
+                    name: 'Тестовый сервер 2',
                     icon: '💻',
                     approximate_member_count: 800,
                     permissions: '0x20',
                     channels: [
                         { id: 'ch4', name: 'general', type: 0 },
-                        { id: 'ch5', name: 'welcome', type: 0 }
-                    ],
-                    roles: [
-                        { id: 'role4', name: 'Developer' },
-                        { id: 'role5', name: 'Tester' }
+                        { id: 'ch5', name: 'bot-commands', type: 0 }
                     ]
                 }
             ],
 
             serverSettings: {},
+            sentMessages: 0,
 
             init() {
                 const savedSettings = localStorage.getItem('botServerSettings');
@@ -868,11 +729,14 @@
                     this.serverSettings = JSON.parse(savedSettings);
                 }
 
-                const isDemo = localStorage.getItem('demoMode') === 'true';
-                if (isDemo) {
-                    App.currentUser = this.demoUser;
-                    App.userGuilds = this.demoGuilds;
+                const sentMessages = localStorage.getItem('sentMessages');
+                if (sentMessages) {
+                    this.sentMessages = parseInt(sentMessages);
                 }
+
+                // Автоматический вход для демо
+                App.currentUser = this.demoUser;
+                App.userGuilds = this.demoGuilds;
             },
 
             saveSettings(guildId, settings) {
@@ -885,6 +749,12 @@
 
             getSettings(guildId) {
                 return this.serverSettings[guildId] || {};
+            },
+
+            incrementSentMessages() {
+                this.sentMessages++;
+                localStorage.setItem('sentMessages', this.sentMessages.toString());
+                return this.sentMessages;
             }
         };
 
@@ -901,9 +771,8 @@
             },
 
             setupEventListeners() {
-                document.getElementById('demo-login').addEventListener('click', () => this.demoLogin());
+                document.getElementById('discord-login').addEventListener('click', () => this.login());
                 document.getElementById('logout-btn').addEventListener('click', () => this.logout());
-                document.getElementById('discord-login').addEventListener('click', () => this.demoLogin());
 
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.addEventListener('click', () => {
@@ -912,26 +781,17 @@
                     });
                 });
 
-                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-                    toggle.addEventListener('change', (e) => {
-                        const statusText = e.target.parentElement.nextElementSibling;
-                        statusText.textContent = e.target.checked ? 'Включено' : 'Выключено';
-                        statusText.style.color = e.target.checked ? 'var(--success)' : 'var(--error)';
-                    });
+                // Обработчики для типа сообщения
+                document.getElementById('message-type').addEventListener('change', (e) => {
+                    this.handleMessageTypeChange(e.target.value);
                 });
-
-                document.getElementById('welcome-json').addEventListener('input', () => this.updatePreview('welcome'));
-                document.getElementById('farewell-json').addEventListener('input', () => this.updatePreview('farewell'));
             },
 
-            demoLogin() {
-                localStorage.setItem('demoMode', 'true');
-                this.currentUser = BotData.demoUser;
-                this.userGuilds = BotData.demoGuilds;
+            login() {
                 Router.navigate('/dashboard');
                 this.updateUserInfo();
                 this.loadGuilds();
-                this.showNotification('Демо-режим активирован!', 'success');
+                this.showNotification('Успешный вход в систему!', 'success');
             },
 
             showAuth() {
@@ -1010,10 +870,8 @@
             },
 
             loadServerData(guild) {
-                this.fillChannelSelect('welcome-channel', guild.channels);
-                this.fillChannelSelect('farewell-channel', guild.channels);
-                this.fillChannelSelect('modlog-channel', guild.channels);
-                this.fillRoleSelect('autorole-role', guild.roles);
+                this.fillChannelSelect('test-channel', guild.channels);
+                this.fillChannelSelect('log-channel', guild.channels);
                 this.loadCurrentSettings(guild.id);
             },
 
@@ -1033,62 +891,14 @@
                 }
             },
 
-            fillRoleSelect(selectId, roles) {
-                const select = document.getElementById(selectId);
-                select.innerHTML = '<option value="">Выберите роль</option>';
-                
-                if (roles) {
-                    roles.forEach(role => {
-                        if (role.name !== '@everyone') {
-                            const option = document.createElement('option');
-                            option.value = role.id;
-                            option.textContent = role.name;
-                            select.appendChild(option);
-                        }
-                    });
-                }
-            },
-
             loadCurrentSettings(guildId) {
                 const settings = BotData.getSettings(guildId);
                 
-                if (settings.welcome) {
-                    document.getElementById('welcome-enabled').checked = settings.welcome.enabled || false;
-                    document.getElementById('welcome-channel').value = settings.welcome.channel_id || '';
-                    if (settings.welcome.message) {
-                        document.getElementById('welcome-json').value = JSON.stringify(settings.welcome.message, null, 2);
-                    }
+                if (settings.bot) {
+                    document.getElementById('command-prefix').value = settings.bot.prefix || '!';
+                    document.getElementById('bot-language').value = settings.bot.language || 'ru';
+                    document.getElementById('log-channel').value = settings.bot.log_channel || '';
                 }
-
-                if (settings.farewell) {
-                    document.getElementById('farewell-enabled').checked = settings.farewell.enabled || false;
-                    document.getElementById('farewell-channel').value = settings.farewell.channel_id || '';
-                    if (settings.farewell.message) {
-                        document.getElementById('farewell-json').value = JSON.stringify(settings.farewell.message, null, 2);
-                    }
-                }
-
-                if (settings.autorole) {
-                    document.getElementById('autorole-enabled').checked = settings.autorole.enabled || false;
-                    document.getElementById('autorole-role').value = settings.autorole.role_id || '';
-                    document.getElementById('autorole-delay').value = settings.autorole.delay || 0;
-                }
-
-                if (settings.moderation) {
-                    document.getElementById('automod-enabled').checked = settings.moderation.enabled || false;
-                    document.getElementById('modlog-channel').value = settings.moderation.log_channel || '';
-                    document.getElementById('max-warnings').value = settings.moderation.max_warnings || 3;
-                    document.getElementById('filter-links').checked = settings.moderation.filter_links || false;
-                    document.getElementById('filter-invites').checked = settings.moderation.filter_invites || false;
-                    document.getElementById('filter-words').checked = settings.moderation.filter_words || false;
-                }
-
-                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-                    toggle.dispatchEvent(new Event('change'));
-                });
-
-                this.updatePreview('welcome');
-                this.updatePreview('farewell');
             },
 
             switchTab(tabName) {
@@ -1099,27 +909,23 @@
                 document.getElementById(`${tabName}-tab`).classList.add('active');
             },
 
-            updatePreview(type) {
-                const jsonTextarea = document.getElementById(`${type}-json`);
-                const previewContent = document.getElementById(`${type}-preview-content`);
-                
-                try {
-                    const jsonData = JSON.parse(jsonTextarea.value);
-                    previewContent.innerHTML = `
-                        <div style="color: var(--success); margin-bottom: 10px;">
-                            <i class="fas fa-check-circle"></i> JSON валиден
-                        </div>
-                        <div style="background: var(--secondary-dark); padding: 15px; border-radius: 5px;">
-                            <strong>Контент:</strong> ${jsonData.content || 'Не указан'}<br>
-                            <strong>Эмбедов:</strong> ${jsonData.embeds ? jsonData.embeds.length : 0}
-                        </div>
-                    `;
-                } catch (error) {
-                    previewContent.innerHTML = `
-                        <div style="color: var(--error);">
-                            <i class="fas fa-exclamation-circle"></i> Ошибка в JSON: ${error.message}
-                        </div>
-                    `;
+            handleMessageTypeChange(type) {
+                // Скрываем все секции
+                document.getElementById('text-message-section').style.display = 'none';
+                document.getElementById('embed-message-section').style.display = 'none';
+                document.getElementById('json-message-section').style.display = 'none';
+
+                // Показываем нужную секцию
+                switch(type) {
+                    case 'text':
+                        document.getElementById('text-message-section').style.display = 'block';
+                        break;
+                    case 'embed':
+                        document.getElementById('embed-message-section').style.display = 'block';
+                        break;
+                    case 'json':
+                        document.getElementById('json-message-section').style.display = 'block';
+                        break;
                 }
             },
 
@@ -1128,20 +934,10 @@
                 document.getElementById('total-members').textContent = this.userGuilds.reduce((sum, guild) => 
                     sum + (guild.approximate_member_count || 0), 0
                 );
-                
-                let activeFeatures = 0;
-                this.userGuilds.forEach(guild => {
-                    const settings = BotData.getSettings(guild.id);
-                    if (settings.welcome?.enabled) activeFeatures++;
-                    if (settings.farewell?.enabled) activeFeatures++;
-                    if (settings.autorole?.enabled) activeFeatures++;
-                    if (settings.moderation?.enabled) activeFeatures++;
-                });
-                document.getElementById('active-features').textContent = activeFeatures;
+                document.getElementById('sent-messages').textContent = BotData.sentMessages;
             },
 
             logout() {
-                localStorage.removeItem('demoMode');
                 this.currentUser = null;
                 this.userGuilds = [];
                 Router.navigate('/login');
@@ -1159,54 +955,136 @@
             }
         };
 
-        // Глобальные функции
-        function saveSettings(type) {
+        // Глобальные функции для тестирования отправки
+        async function sendTestMessage() {
+            const channelId = document.getElementById('test-channel').value;
+            const messageType = document.getElementById('message-type').value;
+            const messageCount = parseInt(document.getElementById('message-count').value);
+            const delay = parseInt(document.getElementById('message-delay').value);
+
+            if (!channelId) {
+                App.showNotification('Выберите канал для отправки!', 'error');
+                return;
+            }
+
+            const resultContent = document.getElementById('test-result-content');
+            resultContent.innerHTML = '<div style="color: var(--accent-blue);"><i class="fas fa-spinner fa-spin"></i> Отправка сообщений...</div>';
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            for (let i = 0; i < messageCount; i++) {
+                try {
+                    const messageData = await prepareMessageData(messageType);
+                    
+                    // Имитация отправки сообщения
+                    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 400));
+                    
+                    // 90% шанс успешной отправки для демо
+                    const isSuccess = Math.random() > 0.1;
+                    
+                    if (isSuccess) {
+                        successCount++;
+                        const sentCount = BotData.incrementSentMessages();
+                        App.updateStats();
+                        
+                        resultContent.innerHTML += `
+                            <div style="color: var(--success); margin: 5px 0;">
+                                <i class="fas fa-check"></i> Сообщение ${i + 1} отправлено успешно! (Всего отправлено: ${sentCount})
+                            </div>
+                        `;
+                    } else {
+                        errorCount++;
+                        resultContent.innerHTML += `
+                            <div style="color: var(--error); margin: 5px 0;">
+                                <i class="fas fa-times"></i> Ошибка отправки сообщения ${i + 1}
+                            </div>
+                        `;
+                    }
+
+                    // Задержка между сообщениями
+                    if (i < messageCount - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+
+                } catch (error) {
+                    errorCount++;
+                    resultContent.innerHTML += `
+                        <div style="color: var(--error); margin: 5px 0;">
+                            <i class="fas fa-times"></i> Ошибка: ${error.message}
+                        </div>
+                    `;
+                }
+            }
+
+            // Обновляем результат
+            const testResult = document.getElementById('test-result');
+            testResult.className = errorCount === 0 ? 'test-result test-success' : 'test-result test-error';
+            
+            resultContent.innerHTML = `
+                <div style="margin-bottom: 10px;">
+                    <strong>Результаты тестирования:</strong><br>
+                    <span style="color: var(--success);">✓ Успешно: ${successCount}</span><br>
+                    <span style="color: var(--error);">✗ Ошибки: ${errorCount}</span>
+                </div>
+                ${resultContent.innerHTML}
+            `;
+
+            App.showNotification(`Отправлено ${successCount} из ${messageCount} сообщений`, successCount === messageCount ? 'success' : 'error');
+        }
+
+        async function prepareMessageData(type) {
+            switch(type) {
+                case 'text':
+                    const text = document.getElementById('text-message').value || 'Тестовое сообщение';
+                    return { content: text };
+                
+                case 'embed':
+                    const title = document.getElementById('embed-title').value || 'Тестовый Embed';
+                    const description = document.getElementById('embed-description').value || 'Это тестовое сообщение';
+                    const color = document.getElementById('embed-color').value;
+                    const colorDecimal = parseInt(color.replace('#', ''), 16);
+                    
+                    return {
+                        embeds: [{
+                            title: title,
+                            description: description,
+                            color: colorDecimal,
+                            timestamp: new Date().toISOString()
+                        }]
+                    };
+                
+                case 'json':
+                    const jsonText = document.getElementById('json-message').value;
+                    try {
+                        return JSON.parse(jsonText);
+                    } catch (error) {
+                        throw new Error('Невалидный JSON: ' + error.message);
+                    }
+                
+                default:
+                    return { content: 'Тестовое сообщение' };
+            }
+        }
+
+        function clearTestResults() {
+            document.getElementById('test-result-content').innerHTML = 'Здесь будут отображаться результаты отправки сообщений';
+            document.getElementById('test-result').className = 'test-result';
+        }
+
+        function saveBotSettings() {
             if (!App.currentGuild) return;
 
-            const settings = {};
-
-            try {
-                switch (type) {
-                    case 'welcome':
-                        settings.welcome = {
-                            enabled: document.getElementById('welcome-enabled').checked,
-                            channel_id: document.getElementById('welcome-channel').value,
-                            message: JSON.parse(document.getElementById('welcome-json').value)
-                        };
-                        break;
-                    case 'farewell':
-                        settings.farewell = {
-                            enabled: document.getElementById('farewell-enabled').checked,
-                            channel_id: document.getElementById('farewell-channel').value,
-                            message: JSON.parse(document.getElementById('farewell-json').value)
-                        };
-                        break;
-                    case 'autorole':
-                        settings.autorole = {
-                            enabled: document.getElementById('autorole-enabled').checked,
-                            role_id: document.getElementById('autorole-role').value,
-                            delay: parseInt(document.getElementById('autorole-delay').value) || 0
-                        };
-                        break;
-                    case 'moderation':
-                        settings.moderation = {
-                            enabled: document.getElementById('automod-enabled').checked,
-                            log_channel: document.getElementById('modlog-channel').value,
-                            max_warnings: parseInt(document.getElementById('max-warnings').value) || 3,
-                            filter_links: document.getElementById('filter-links').checked,
-                            filter_invites: document.getElementById('filter-invites').checked,
-                            filter_words: document.getElementById('filter-words').checked
-                        };
-                        break;
+            const settings = {
+                bot: {
+                    prefix: document.getElementById('command-prefix').value,
+                    language: document.getElementById('bot-language').value,
+                    log_channel: document.getElementById('log-channel').value
                 }
+            };
 
-                BotData.saveSettings(App.currentGuild.id, settings);
-                App.showNotification('Настройки сохранены успешно!', 'success');
-                App.updateStats();
-            } catch (error) {
-                console.error('Save failed:', error);
-                App.showNotification('Ошибка при сохранении настроек', 'error');
-            }
+            BotData.saveSettings(App.currentGuild.id, settings);
+            App.showNotification('Настройки бота сохранены!', 'success');
         }
 
         // Инициализация
